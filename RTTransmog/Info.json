@@ -1,0 +1,12 @@
+﻿{
+  "Id": "RTTransmog",
+  "DisplayName": "Equipment Transmog for RT",
+  "Author": "ADDB",
+  "Version": "0.5.0",
+  "ManagerVersion": "0.25.0",
+  "Requirements": [],
+  "AssemblyName": "RTTransmog.dll",
+  "EntryMethod": "RTTransmog.Main.Load",
+  "HomePage": "",
+  "Repository": ""
+}

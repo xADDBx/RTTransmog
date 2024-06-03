@@ -1,0 +1,5 @@
+[h1]Equipment Transmog for RT[/h1]
+
+Currently doesn't support weapons.
+
+Access by using the CTRL+F10 mod menu.
