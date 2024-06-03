@@ -7,6 +7,6 @@
   "Requirements": [],
   "AssemblyName": "RTTransmog.dll",
   "EntryMethod": "RTTransmog.Main.Load",
-  "HomePage": "",
-  "Repository": ""
+  "HomePage": "https://github.com/xADDBx/RTTransmog",
+  "Repository": "https://raw.githubusercontent.com/xADDBx/RTTransmog/master/Repository.json"
 }

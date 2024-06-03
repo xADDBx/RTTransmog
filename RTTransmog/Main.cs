@@ -219,6 +219,7 @@ public static class Main {
                 pickedUnit = units[newIndex];
                 ResetBrowsers();
             }
+            Div();
             if (TogglePrivate("Show Items without Equipment Entity (those are by default hidden because I assume they don't change visuals). This could be helpful if you don't want equipment in a slot to show because you can just override the slot with an item with no visuals.", ref settings.shouldShowItemsWithoutEE, false, false, 0, AutoWidth())) {
                 ResetBrowsers();
             }
