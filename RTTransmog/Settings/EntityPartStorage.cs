@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static RTTransmog.Main;
 using Kingmaker.EntitySystem.Entities.Base;
+using Kingmaker.View.Animation;
 using Kingmaker.Visual.CharacterSystem;
 
 namespace RTTransmog {
@@ -15,7 +16,31 @@ namespace RTTransmog {
         public class PerSaveSettings : EntityPart {
             public const string ID = "RTTransmog.PerSaveSettings";
             public bool didFirstInit = false;
-            public HashSet<string> KnownWeapons = new ();
+
+            public Dictionary<WeaponAnimationStyle, HashSet<string>> KnownWeapons = new()
+            {
+                {WeaponAnimationStyle.Knife, new()},
+                {WeaponAnimationStyle.Fencing, new()},
+                {WeaponAnimationStyle.Shield, new()},
+                {WeaponAnimationStyle.AxeTwoHanded, new()},
+                {WeaponAnimationStyle.Assault, new()},
+                {WeaponAnimationStyle.BrutalOneHanded, new()},
+                {WeaponAnimationStyle.BrutalTwoHanded, new()},
+                {WeaponAnimationStyle.HeavyOnHip, new()},
+                {WeaponAnimationStyle.HeavyOnShoulder, new()},
+                {WeaponAnimationStyle.Pistol, new()},
+                {WeaponAnimationStyle.Rifle, new()},
+                {WeaponAnimationStyle.Thrown, new()},
+                {WeaponAnimationStyle.Fist, new()},
+                {WeaponAnimationStyle.Mechadendrites, new()},
+                {WeaponAnimationStyle.Staff, new()},
+                {WeaponAnimationStyle.EldarRifle, new()},
+                {WeaponAnimationStyle.EldarAssault, new()},
+                {WeaponAnimationStyle.EldarHeavyOnHip, new()},
+                {WeaponAnimationStyle.EldarHeavyOnShoulder, new()},
+                {WeaponAnimationStyle.OneHandedHammer, new()},
+                {WeaponAnimationStyle.TwoHandedHammer, new()},
+            };
             public HashSet<string> KnownShoulders = new();
             public HashSet<string> KnownRing = new();
             public HashSet<string> KnownNeck = new();
@@ -24,8 +49,8 @@ namespace RTTransmog {
             public HashSet<string> KnownFeet = new();
             public HashSet<string> KnownArmor = new();
             public HashSet<string> KnownMechandrite = new();
-            public Dictionary<string, ValueTuple<string, string>> MainhandWeapons = new();
-            public Dictionary<string, ValueTuple<string, string>> OffhandWeapons = new();
+            // public Dictionary<string, ValueTuple<string, string>> MainhandWeapons = new();
+            // public Dictionary<string, ValueTuple<string, string>> OffhandWeapons = new();
             public Dictionary<string, ValueTuple<string, string>> Shoulders = new();
             public Dictionary<string, ValueTuple<string, string>> Ring1 = new();
             public Dictionary<string, ValueTuple<string, string>> Ring2 = new();
@@ -34,6 +59,33 @@ namespace RTTransmog {
             public Dictionary<string, ValueTuple<string, string>> Gloves = new();
             public Dictionary<string, ValueTuple<string, string>> Feet = new();
             public Dictionary<string, ValueTuple<string, string>> Armor = new();
+            
+            // gotta initialize
+            public Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>> Weapons = new()
+            {
+                {WeaponAnimationStyle.Knife, new()},
+                {WeaponAnimationStyle.Fencing, new()},
+                {WeaponAnimationStyle.Shield, new()},
+                {WeaponAnimationStyle.AxeTwoHanded, new()},
+                {WeaponAnimationStyle.Assault, new()},
+                {WeaponAnimationStyle.BrutalOneHanded, new()},
+                {WeaponAnimationStyle.BrutalTwoHanded, new()},
+                {WeaponAnimationStyle.HeavyOnHip, new()},
+                {WeaponAnimationStyle.HeavyOnShoulder, new()},
+                {WeaponAnimationStyle.Pistol, new()},
+                {WeaponAnimationStyle.Rifle, new()},
+                {WeaponAnimationStyle.Thrown, new()},
+                {WeaponAnimationStyle.Fist, new()},
+                {WeaponAnimationStyle.Mechadendrites, new()},
+                {WeaponAnimationStyle.Staff, new()},
+                {WeaponAnimationStyle.EldarRifle, new()},
+                {WeaponAnimationStyle.EldarAssault, new()},
+                {WeaponAnimationStyle.EldarHeavyOnHip, new()},
+                {WeaponAnimationStyle.EldarHeavyOnShoulder, new()},
+                {WeaponAnimationStyle.OneHandedHammer, new()},
+                {WeaponAnimationStyle.TwoHandedHammer, new()},
+            };
+            //
 
         }
         private static PerSaveSettings cachedPerSave = null;

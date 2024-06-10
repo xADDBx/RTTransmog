@@ -18,6 +18,7 @@ using Kingmaker.View.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
 using System.Reflection;
 using Kingmaker.PubSubSystem.Core;
+using Kingmaker.View.Animation;
 
 namespace RTTransmog {
     [HarmonyPatch]
@@ -58,9 +59,21 @@ namespace RTTransmog {
             Override = ("", "");
             return false;
         }
-        /*
+        
+        public static bool CheckForOverride(WeaponAnimationStyle animStyle, BaseUnitEntity unit, out (string, string) Override) {
+            Main.log.Log($"Checking for anim style: {animStyle}");
+            if (Main.getDictForSlot(animStyle).TryGetValue(animStyle, out var styleDictionary) && styleDictionary.TryGetValue(unit.UniqueId, out var ret))
+            {
+                Override = ret;
+                return true;
+            }
+            Override = ("", "");
+            return false;
+        }
+        
+        
         internal static class Weapon_Patches {
-            internal static class UnitViewHandsEquipment_Patches {
+            /*internal static class UnitViewHandsEquipment_Patches {
                 [HarmonyTargetMethods]
                 public static IEnumerable<MethodBase> TargetMethods() {
                     var targetType = typeof(BlueprintItemEquipmentHand);
@@ -74,18 +87,30 @@ namespace RTTransmog {
                         }
                     }
                 }
-            }
+            }*/
             internal static class ItemEntityWeapon_Patches {
-
+                
             }
+            [HarmonyPatch(typeof(UnitViewHandSlotData))]
             internal static class UnitViewHandSlotData_Patches {
-
+                [HarmonyPatch(nameof(UnitViewHandSlotData.VisibleItemBlueprint), MethodType.Getter)]
+                [HarmonyPostfix]
+                public static void ReplaceVisibleItemBlueprintInHand(UnitViewHandSlotData __instance, ref BlueprintItemEquipmentHand __result)
+                {
+                    if (__result == null) return;
+                    //if (((BlueprintItemEquipmentHand)__instance.VisibleItem?.Blueprint)?.VisualParameters?.AnimStyle ==
+                    //    WeaponAnimationStyle.None) return;
+                    if (CheckForOverride(__result.VisualParameters.AnimStyle, __instance.Owner, out var Override)) {
+                        __result = (BlueprintItemEquipmentHand)ResourcesLibrary.BlueprintsCache.Load(Override.Item1);
+                    }
+                }
             }
+            
             internal static class UnitAnimationCallbackReceiver_Patches {
 
             }
         }
-        */
+        
         [HarmonyPatch(typeof(UnitEntityView))]
         internal static class UnitEntityView_Patch {
             [HarmonyPatch(nameof(UnitEntityView.TryForceRampIndices))]
