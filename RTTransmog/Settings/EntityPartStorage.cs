@@ -16,23 +16,20 @@ namespace RTTransmog {
         public class PerSaveSettings : EntityPart {
             public const string ID = "RTTransmog.PerSaveSettings";
             public bool didFirstInit = false;
-
+            
+            // We have got to initialize this too.
             public Dictionary<WeaponAnimationStyle, HashSet<string>> KnownWeapons = new()
             {
                 {WeaponAnimationStyle.Knife, new()},
                 {WeaponAnimationStyle.Fencing, new()},
-                {WeaponAnimationStyle.Shield, new()},
                 {WeaponAnimationStyle.AxeTwoHanded, new()},
                 {WeaponAnimationStyle.Assault, new()},
                 {WeaponAnimationStyle.BrutalOneHanded, new()},
                 {WeaponAnimationStyle.BrutalTwoHanded, new()},
                 {WeaponAnimationStyle.HeavyOnHip, new()},
-                {WeaponAnimationStyle.HeavyOnShoulder, new()},
                 {WeaponAnimationStyle.Pistol, new()},
                 {WeaponAnimationStyle.Rifle, new()},
-                {WeaponAnimationStyle.Thrown, new()},
                 {WeaponAnimationStyle.Fist, new()},
-                {WeaponAnimationStyle.Mechadendrites, new()},
                 {WeaponAnimationStyle.Staff, new()},
                 {WeaponAnimationStyle.EldarRifle, new()},
                 {WeaponAnimationStyle.EldarAssault, new()},
@@ -41,6 +38,7 @@ namespace RTTransmog {
                 {WeaponAnimationStyle.OneHandedHammer, new()},
                 {WeaponAnimationStyle.TwoHandedHammer, new()},
             };
+            //
             public HashSet<string> KnownShoulders = new();
             public HashSet<string> KnownRing = new();
             public HashSet<string> KnownNeck = new();
@@ -65,18 +63,14 @@ namespace RTTransmog {
             {
                 {WeaponAnimationStyle.Knife, new()},
                 {WeaponAnimationStyle.Fencing, new()},
-                {WeaponAnimationStyle.Shield, new()},
                 {WeaponAnimationStyle.AxeTwoHanded, new()},
                 {WeaponAnimationStyle.Assault, new()},
                 {WeaponAnimationStyle.BrutalOneHanded, new()},
                 {WeaponAnimationStyle.BrutalTwoHanded, new()},
                 {WeaponAnimationStyle.HeavyOnHip, new()},
-                {WeaponAnimationStyle.HeavyOnShoulder, new()},
                 {WeaponAnimationStyle.Pistol, new()},
                 {WeaponAnimationStyle.Rifle, new()},
-                {WeaponAnimationStyle.Thrown, new()},
                 {WeaponAnimationStyle.Fist, new()},
-                {WeaponAnimationStyle.Mechadendrites, new()},
                 {WeaponAnimationStyle.Staff, new()},
                 {WeaponAnimationStyle.EldarRifle, new()},
                 {WeaponAnimationStyle.EldarAssault, new()},
