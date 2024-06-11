@@ -23,10 +23,7 @@ using Kingmaker.UnitLogic.Progression.Features;
 using Kingmaker.Blueprints.Base;
 using Kingmaker.PubSubSystem.Core;
 using Kingmaker.PubSubSystem;
-using Kingmaker.Blueprints.Items;
 using Kingmaker.View.Animation;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 namespace RTTransmog;
 
@@ -49,10 +46,8 @@ public static class Main
     private static Browser<string, string> HeadBrowser = new(true, true, false, true);
     private static Browser<string, string> GlovesBrowser = new(true, true, false, true);
     private static Browser<string, string> FeetBrowser = new(true, true, false, true);
-
     private static Browser<string, string> ArmorBrowser = new(true, true, false, true);
-
-    //private static Browser<string, string> WeaponBrowser = new(true, true, false, true);
+    
     //weapon browsers
     private static Browser<string, string> KnifeBrowser = new(true, true, false, true);
     private static Browser<string, string> FencingBrowser = new(true, true, false, true);
@@ -70,14 +65,11 @@ public static class Main
     private static Browser<string, string> EldarHeavyOnHipBrowser = new(true, true, false, true);
     private static Browser<string, string> EldarHeavyOnShoulderBrowser = new(true, true, false, true);
     private static Browser<string, string> OneHandedHammerBrowser = new(true, true, false, true);
-
     private static Browser<string, string> TwoHandedHammerBrowser = new(true, true, false, true);
-
     //
+    
     private static Dictionary<string, string> KeyCache = new();
-
-    //private static bool showMainhandWeaponBrowser = false;
-    //private static bool showOffhandWeaponBrowser = false;
+    
     private static bool showShoulderBrowser = false;
     private static bool showRing1Browser = false;
     private static bool showRing2Browser = false;
@@ -238,8 +230,6 @@ public static class Main
 
         switch (slot)
         {
-            // case Slot.Mainhand: return EntityPartStorage.perSave.MainhandWeapons;
-            // case Slot.Offhand: return EntityPartStorage.perSave.OffhandWeapons;
             case Slot.Shoulder: return EntityPartStorage.perSave.Shoulders;
             case Slot.Ring1: return EntityPartStorage.perSave.Ring1;
             case Slot.Ring2: return EntityPartStorage.perSave.Ring2;
@@ -391,8 +381,6 @@ public static class Main
 
     public static void ResetBrowsers()
     {
-        // MainhandWeaponBrowser.ResetSearch(); deprecated
-        // OffhandWeaponBrowser.ResetSearch(); deprecated
         ShoulderBrowser.ResetSearch();
         Ring1Browser.ResetSearch();
         Ring2Browser.ResetSearch();
@@ -452,22 +440,7 @@ public static class Main
             {
                 ResetBrowsers();
             }
-
-            /*
-            currentBrowserSlot = Slot.Mainhand;
-            OverrideGUI();
-            DisclosureToggle("Show Mainhand Weapon Browser", ref showMainhandWeaponBrowser);
-            if (showMainhandWeaponBrowser) {
-                BrowserGUI<BlueprintItemWeapon>(MainhandWeaponBrowser, EntityPartStorage.perSave.KnownWeapons);
-            }
-
-            currentBrowserSlot = Slot.Offhand;
-            OverrideGUI();
-            DisclosureToggle("Show Offhand Weapon Browser", ref showOffhandWeaponBrowser);
-            if (showOffhandWeaponBrowser) {
-                BrowserGUI<BlueprintItemWeapon>(OffhandWeaponBrowser, EntityPartStorage.perSave.KnownWeapons);
-            }
-            */
+            
             currentBrowserSlot = Slot.Shoulder;
             OverrideGUI();
             DisclosureToggle($"Show {SlotName[Slot.Shoulder]} Browser", ref showShoulderBrowser);
