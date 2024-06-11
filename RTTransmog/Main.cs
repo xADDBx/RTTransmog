@@ -542,19 +542,6 @@ public static class Main
 
             if (showWeaponBrowsers)
             {
-                if (mainHand)
-                {
-                    Space(5);
-                    ActionButton("Current Hand: Main", () => mainHand = !mainHand, AutoWidth());
-                    Space(5);
-                }
-                else
-                {
-                    Space(5);
-                    ActionButton("Current Hand: Off", () => mainHand = !mainHand, AutoWidth());
-                    Space(5);
-                }
-
                 WeaponSlotSelector();
 
                 currentBrowserSlot = Slot.Knife;
@@ -854,6 +841,19 @@ public static class Main
 
     private static void WeaponSlotSelector()
     {
+        if (mainHand)
+        {
+            Space(5);
+            ActionButton("Current Hand: Main", () => mainHand = !mainHand, AutoWidth());
+            Space(5);
+        }
+        else
+        {
+            Space(5);
+            ActionButton("Current Hand: Off", () => mainHand = !mainHand, AutoWidth());
+            Space(5);
+        }
+        
         GUILayout.Label("Weapon set");
         using (HorizontalScope())
         {
