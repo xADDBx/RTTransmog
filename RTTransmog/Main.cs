@@ -248,54 +248,34 @@ public static class Main {
         switch (slot) {
             case Slot.Mainhand: {
                 itemSlot = body.m_HandsEquipmentSets[body.m_CurrentHandsEquipmentSetIndex].PrimaryHand;
-            }
-                ;
-                break;
+            }; break;
             case Slot.Offhand: {
                 itemSlot = body.m_HandsEquipmentSets[body.m_CurrentHandsEquipmentSetIndex].SecondaryHand;
-            }
-                ;
-                break;
+            }; break;
             case Slot.Shoulder: {
                 itemSlot = body.Shoulders;
-            }
-                ;
-                break;
+            }; break;
             case Slot.Ring1: {
                 itemSlot = body.Ring1;
-            }
-                ;
-                break;
+            }; break;
             case Slot.Ring2: {
                 itemSlot = body.Ring2;
-            }
-                ;
-                break;
+            }; break;
             case Slot.Neck: {
                 itemSlot = body.Neck;
-            }
-                ;
-                break;
+            }; break;
             case Slot.Head: {
                 itemSlot = body.Head;
-            }
-                ;
-                break;
+            }; break;
             case Slot.Gloves: {
                 itemSlot = body.Gloves;
-            }
-                ;
-                break;
+            }; break;
             case Slot.Feet: {
                 itemSlot = body.Feet;
-            }
-                ;
-                break;
+            }; break;
             case Slot.Armor: {
                 itemSlot = body.Armor;
-            }
-                ;
-                break;
+            }; break;
         }
 
         if (addNew) {
