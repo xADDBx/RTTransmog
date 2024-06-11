@@ -56,7 +56,6 @@ namespace RTTransmog {
                 Override = ret;
                 return true;
             }
-
             Override = ("", "");
             return false;
         }
@@ -69,7 +68,6 @@ namespace RTTransmog {
                 Override = ret;
                 return true;
             }
-
             Override = ("", "");
             return false;
         }
@@ -111,61 +109,60 @@ namespace RTTransmog {
             }
         }
     }
-
     [HarmonyPatch(typeof(UnitEntityView))]
-    internal static class UnitEntityView_Patch {
-        [HarmonyPatch(nameof(UnitEntityView.TryForceRampIndices))]
-        [HarmonyPrefix]
-        public static bool TryForceRampIndices(UnitEntityView __instance, ItemSlot slot, IEnumerable<EquipmentEntity> ees, Character character) {
-            if (CheckForOverride(slot, __instance.EntityData, out var Override)) {
-                Character character2 = ((character == null) ? __instance.CharacterAvatar : character);
-                if (character2 == null) {
-                    return true;}
-
-                BlueprintItemEquipment blueprintItemEquipment = ResourcesLibrary.BlueprintsCache.Load(Override.Item1) as BlueprintItemEquipment;
-                if (blueprintItemEquipment == null || blueprintItemEquipment.ForcedRampColorPresetIndex < 0) {
-                    return true;}
-
-                foreach (EquipmentEntity equipmentEntity in ees) {
-                    if (!(equipmentEntity.ColorPresets == null) && equipmentEntity.ColorPresets.IndexPairs.Count > 0) {
-                        int primaryIndex = equipmentEntity.ColorPresets.IndexPairs[blueprintItemEquipment.ForcedRampColorPresetIndex].PrimaryIndex;
-                        int secondaryIndex = equipmentEntity.ColorPresets.IndexPairs[blueprintItemEquipment.ForcedRampColorPresetIndex].SecondaryIndex;
-                        character2.SetRampIndices(equipmentEntity, new int?(primaryIndex), new int?(secondaryIndex), false);}
+        internal static class UnitEntityView_Patch {
+            [HarmonyPatch(nameof(UnitEntityView.TryForceRampIndices))]
+            [HarmonyPrefix]
+            public static bool TryForceRampIndices(UnitEntityView __instance, ItemSlot slot, IEnumerable<EquipmentEntity> ees, Character character) {
+                if (CheckForOverride(slot, __instance.EntityData, out var Override)) {
+                    Character character2 = ((character == null) ? __instance.CharacterAvatar : character);
+                    if (character2 == null) {
+                        return true;
+                    }
+                    BlueprintItemEquipment blueprintItemEquipment = ResourcesLibrary.BlueprintsCache.Load(Override.Item1) as BlueprintItemEquipment;
+                    if (blueprintItemEquipment == null || blueprintItemEquipment.ForcedRampColorPresetIndex < 0) {
+                        return true;
+                    }
+                    foreach (EquipmentEntity equipmentEntity in ees) {
+                        if (!(equipmentEntity.ColorPresets == null) && equipmentEntity.ColorPresets.IndexPairs.Count > 0) {
+                            int primaryIndex = equipmentEntity.ColorPresets.IndexPairs[blueprintItemEquipment.ForcedRampColorPresetIndex].PrimaryIndex;
+                            int secondaryIndex = equipmentEntity.ColorPresets.IndexPairs[blueprintItemEquipment.ForcedRampColorPresetIndex].SecondaryIndex;
+                            character2.SetRampIndices(equipmentEntity, new int?(primaryIndex), new int?(secondaryIndex), false);
+                        }
+                    }
+                    return false;
                 }
-
-                return false;
+                return true;
             }
-            return true;
-        }
-        [HarmonyPatch(nameof(UnitEntityView.ExtractEquipmentEntities), [typeof(ItemSlot)])]
-        [HarmonyPrefix]
-        public static bool ExtractEquipmentEntities(UnitEntityView __instance, ItemSlot slot, ref IEnumerable<EquipmentEntity> __result) {
-            if (CheckForOverride(slot, __instance.EntityData, out var Override)) {
-                __result = Main.ExtractEEs(ResourcesLibrary.BlueprintsCache.Load(Override.Item1) as BlueprintItemEquipment, __instance.EntityData);
-                Main.log.Log($"Found Override with {Override.Item2}, returning array with {__result?.Count() ?? 0} items");
-                return false;
+            [HarmonyPatch(nameof(UnitEntityView.ExtractEquipmentEntities), [typeof(ItemSlot)])]
+            [HarmonyPrefix]
+            public static bool ExtractEquipmentEntities(UnitEntityView __instance, ItemSlot slot, ref IEnumerable<EquipmentEntity> __result) {
+                if (CheckForOverride(slot, __instance.EntityData, out var Override)) {
+                    __result = Main.ExtractEEs(ResourcesLibrary.BlueprintsCache.Load(Override.Item1) as BlueprintItemEquipment, __instance.EntityData);
+                    Main.log.Log($"Found Override with {Override.Item2}, returning array with {__result?.Count() ?? 0} items");
+                    return false;
+                }
+                return true;
             }
-            return true;
         }
-    }
-
-    [HarmonyPatch(typeof(Game))]
-    internal static class Game_Patch {
-        internal static bool isLoadGame = false;
-        [HarmonyPatch(nameof(Game.LoadGameForce))]
-        [HarmonyPrefix]
-        private static void LoadGameForce() {
-            isLoadGame = true;
-        }
-        [HarmonyPatch(nameof(Game.LoadArea), [typeof(BlueprintArea), typeof(BlueprintAreaEnterPoint), typeof(AutoSaveMode), typeof(SaveInfo), typeof(Action)])]
-        [HarmonyPrefix]
-        private static void LoadArea() {
-            EntityPartStorage.ClearCachedPerSave();
-            if (!EventBus.GlobalSubscribers.Contains(EventHandler.Instance)) {
-                EventBus.Subscribe(EventHandler.Instance);
+        [HarmonyPatch(typeof(Game))]
+        internal static class Game_Patch {
+            internal static bool isLoadGame = false;
+            [HarmonyPatch(nameof(Game.LoadGameForce))]
+            [HarmonyPrefix]
+            private static void LoadGameForce() {
+                isLoadGame = true;
             }
-            if (isLoadGame) {
-                isLoadGame = false;
+            [HarmonyPatch(nameof(Game.LoadArea), [typeof(BlueprintArea), typeof(BlueprintAreaEnterPoint), typeof(AutoSaveMode), typeof(SaveInfo), typeof(Action)])]
+            [HarmonyPrefix]
+            private static void LoadArea() {
+                EntityPartStorage.ClearCachedPerSave();
+                if (!EventBus.GlobalSubscribers.Contains(EventHandler.Instance)) {
+                    EventBus.Subscribe(EventHandler.Instance);
+                }
+                if (isLoadGame) {
+                    isLoadGame = false;
+                }
             }
         }
     }

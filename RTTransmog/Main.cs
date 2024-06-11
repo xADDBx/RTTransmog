@@ -34,9 +34,6 @@ public static class Main {
     internal static Harmony HarmonyInstance;
     internal static UnityModManager.ModEntry.ModLogger log;
     internal static UnityModManager.ModEntry mod;
-
-    //private static Browser<string, string> MainhandWeaponBrowser = new(true, true, false, true);
-    //private static Browser<string, string> OffhandWeaponBrowser = new(true, true, false, true);
     private static Browser<string, string> ShoulderBrowser = new(true, true, false, true);
     private static Browser<string, string> Ring1Browser = new(true, true, false, true);
     private static Browser<string, string> Ring2Browser = new(true, true, false, true);
@@ -227,46 +224,46 @@ public static class Main {
         ItemSlot itemSlot = null;
         switch (slot) {
             case Slot.Mainhand: {
-                itemSlot = body.m_HandsEquipmentSets[body.m_CurrentHandsEquipmentSetIndex].PrimaryHand;
-            }; break;
+                    itemSlot = body.m_HandsEquipmentSets[body.m_CurrentHandsEquipmentSetIndex].PrimaryHand;
+                }; break;
             case Slot.Offhand: {
-                itemSlot = body.m_HandsEquipmentSets[body.m_CurrentHandsEquipmentSetIndex].SecondaryHand;
-            }; break;
+                    itemSlot = body.m_HandsEquipmentSets[body.m_CurrentHandsEquipmentSetIndex].SecondaryHand;
+                }; break;
             case Slot.Shoulder: {
-                itemSlot = body.Shoulders;
-            }; break;
+                    itemSlot = body.Shoulders;
+                }; break;
             case Slot.Ring1: {
-                itemSlot = body.Ring1;
-            }; break;
+                    itemSlot = body.Ring1;
+                }; break;
             case Slot.Ring2: {
-                itemSlot = body.Ring2;
-            }; break;
+                    itemSlot = body.Ring2;
+                }; break;
             case Slot.Neck: {
-                itemSlot = body.Neck;
-            }; break;
+                    itemSlot = body.Neck;
+                }; break;
             case Slot.Head: {
-                itemSlot = body.Head;
-            }; break;
+                    itemSlot = body.Head;
+                }; break;
             case Slot.Gloves: {
-                itemSlot = body.Gloves;
-            }; break;
+                    itemSlot = body.Gloves;
+                }; break;
             case Slot.Feet: {
-                itemSlot = body.Feet;
-            }; break;
+                    itemSlot = body.Feet;
+                }; break;
             case Slot.Armor: {
-                itemSlot = body.Armor;
-            }; break;
+                    itemSlot = body.Armor;
+                }; break;
         }
         if (addNew) {
             getDictForSlot(slot)[pickedUnit.UniqueId] = (newId, GetKey(newId));
             EntityPartStorage.SavePerSaveSettings();
         }
-
         pickedUnit.View.HandsEquipment.ChangeEquipmentWithoutAnimation();
         if (itemSlot == null) return;
-        EventBus.RaiseEvent<IUnitEquipmentHandler>(pickedUnit,
-            delegate(IUnitEquipmentHandler h) { h.HandleEquipmentSlotUpdated(itemSlot, itemSlot.MaybeItem ?? null); },
-            true);
+        EventBus.RaiseEvent<IUnitEquipmentHandler>(pickedUnit, delegate (IUnitEquipmentHandler h)
+        {
+            h.HandleEquipmentSlotUpdated(itemSlot, itemSlot.MaybeItem ?? null);
+        }, true);
     }
     public static IEnumerable<EquipmentEntity> ExtractEEs(BlueprintItemEquipment blueprintItemEquipment, BaseUnitEntity unit = null) {
         unit ??= pickedUnit;
@@ -635,7 +632,7 @@ public static class Main {
             if (getDictForSlot(currentBrowserSlot).TryGetValue(pickedUnit.UniqueId, out var Override)) {
                 hasOverride = true;
             }
-            if (sprite == null) {
+            if (sprite == null ) {
                 if (GUILayout.Button("No Icon", rarityStyle, GUILayout.Width(w), GUILayout.Height(h))) {
                     UpdateEquippedItems(currentBrowserSlot, hasOverride, Override.Item1, true, id);
                 }
@@ -671,41 +668,27 @@ public static class Main {
         }
         Space(5);
     }
-    public static void BrowserGUI<T>(Browser<string, string> browser, HashSet<string> knownIds,
-        WeaponAnimationStyle animStyle = WeaponAnimationStyle.None)
-        where T : BlueprintItemEquipment {
+    public static void BrowserGUI<T>(Browser<string, string> browser, HashSet<string> knownIds, WeaponAnimationStyle animStyle = WeaponAnimationStyle.None) where T : BlueprintItemEquipment {
         using (HorizontalScope()) {
             Space(25);
             using (VerticalScope()) {
-                Func<IEnumerable<string>> available;
-                IEnumerable<string> current;
-                if (animStyle == WeaponAnimationStyle.None) {
-                    available = () => Kingmaker.Cheats.Utilities.GetBlueprintGuids<T>().Where(HasEEsForCurrentUnit);
-                    current = knownIds.Where(HasEEsForCurrentUnit);
-                }
-                else {
-                    available = () =>
-                        Kingmaker.Cheats.Utilities.GetBlueprintGuids<T>().Where(item => MatchesAnimStyle(item, animStyle)); current = knownIds.Where(item => MatchesAnimStyle(item, animStyle));
-                }
-
-                browser.OnGUI(current,
-                    available, id => id, GetKey, id => [GetKey(id)], null, null, null, 50, true, true, "", false, null,
-                    (definitions, _currentDict) => {
-                        var count = definitions.Count;
-                        int itemsPerRow = 12;
-                        using (VerticalScope()) {
-                            for (var ii = 0; ii < count;) {
-                                var tmp = ii;
-                                using (HorizontalScope()) {
-                                    for (; ii < Math.Min(tmp + itemsPerRow, count); ii++) {
-                                        var customID = definitions[ii];
-                                        // 6 Portraits per row; 692px per image + buffer
-                                        SpriteGUI(customID, 0.5f, (int)(Params.WindowWidth - itemsPerRow * 200.0f / 6.0f) / itemsPerRow);
+                browser.OnGUI(knownIds.Where(HasEEsForCurrentUnit), () => Kingmaker.Cheats.Utilities.GetBlueprintGuids<T>().Where(HasEEsForCurrentUnit), id => id, GetKey, id => [GetKey(id)], null, null, null, 50, true, true, "", false, null,
+                            (definitions, _currentDict) => {
+                                var count = definitions.Count;
+                                int itemsPerRow = 12;
+                                using (VerticalScope()) {
+                                    for (var ii = 0; ii < count;) {
+                                        var tmp = ii;
+                                        using (HorizontalScope()) {
+                                            for (; ii < Math.Min(tmp + itemsPerRow, count); ii++) {
+                                                var customID = definitions[ii];
+                                                // 6 Portraits per row; 692px per image + buffer
+                                                SpriteGUI(customID, 0.5f, (int)(Params.WindowWidth - itemsPerRow * 200.0f/6.0f) / itemsPerRow);
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                    });
+                            });
             }
         }
     }
@@ -715,9 +698,9 @@ public static class Main {
             return true;
         return false;
     }
+
     public static bool HasEEsForCurrentUnit(string id) {
-        var bp = ResourcesLibrary.BlueprintsCache.Load(id);
-        bool hasEEs = (ExtractEEs(bp as BlueprintItemEquipment, pickedUnit)?.Count() ?? 0) > 0;
+        bool hasEEs = (ExtractEEs(ResourcesLibrary.BlueprintsCache.Load(id) as BlueprintItemEquipment, pickedUnit)?.Count() ?? 0) > 0;
         return hasEEs || settings.shouldShowItemsWithoutEE;
     }
 
