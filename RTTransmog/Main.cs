@@ -33,7 +33,6 @@ namespace RTTransmog;
 public static class Main {
     internal static Harmony HarmonyInstance;
     internal static UnityModManager.ModEntry.ModLogger log;
-
     internal static UnityModManager.ModEntry mod;
 
     //private static Browser<string, string> MainhandWeaponBrowser = new(true, true, false, true);
@@ -46,7 +45,6 @@ public static class Main {
     private static Browser<string, string> GlovesBrowser = new(true, true, false, true);
     private static Browser<string, string> FeetBrowser = new(true, true, false, true);
     private static Browser<string, string> ArmorBrowser = new(true, true, false, true);
-
     //weapon browsers
     private static Browser<string, string> KnifeBrowser = new(true, true, false, true);
     private static Browser<string, string> FencingBrowser = new(true, true, false, true);
@@ -66,7 +64,6 @@ public static class Main {
     private static Browser<string, string> OneHandedHammerBrowser = new(true, true, false, true);
     private static Browser<string, string> TwoHandedHammerBrowser = new(true, true, false, true);
     //
-
     private static Dictionary<string, string> KeyCache = new();
 
     private static bool showShoulderBrowser = false;
@@ -77,17 +74,13 @@ public static class Main {
     private static bool showGlovesBrowser = false;
     private static bool showFeetBrowser = false;
     private static bool showArmorBrowser = false;
-
     //
     private static bool showWeaponBrowsers = false;
     private static bool mainHand = true;
-
     private static int weaponSet {
         get { return (m_weaponSet == false ? 0 : 1); }
     }
-
     private static bool m_weaponSet = false; //false is set 0, true is set 1
-
     private static bool showKnifeBrowser = false;
     private static bool showFencingBrowser = false;
     private static bool showAxeTwoHandedBrowser = false;
@@ -110,7 +103,6 @@ public static class Main {
     private static Slot currentBrowserSlot;
     private static BaseUnitEntity pickedUnit = null;
     public static Settings settings;
-
     public enum Slot {
         Mainhand,
         Offhand,
@@ -142,7 +134,6 @@ public static class Main {
         OneHandedHammer,
         TwoHandedHammer,
     }
-
     private static Dictionary<Slot, string> SlotName = new Dictionary<Slot, string>() {
         { Slot.Mainhand, "Mainhand" },
         { Slot.Offhand, "Offhand" },
@@ -172,7 +163,6 @@ public static class Main {
         { Slot.OneHandedHammer, "One-handed Hammers" },
         { Slot.TwoHandedHammer, "Two-handed Hammers" },
     };
-
     public static WeaponAnimationStyle getAnimStyleFromSlot(Slot slot) // Needed, otherwise the indices are misaligned.
     {
         if (WeaponAnimationStyle.TryParse<WeaponAnimationStyle>(slot.ToString(), out var animStyle)) {
@@ -181,7 +171,6 @@ public static class Main {
 
         throw new Exception("Failed to parse weapon animation style.");
     }
-
     public static bool Load(UnityModManager.ModEntry modEntry) {
         log = modEntry.Logger;
         mod = modEntry;
@@ -195,28 +184,23 @@ public static class Main {
         HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
         return true;
     }
-
     public static void OnSaveGUI(ModEntry modEntry) {
         settings.Save(modEntry);
     }
-
     public static void FirstInit() {
         EntityPartStorage.perSave.didFirstInit = true;
         foreach (var item in Game.Instance.Player.Inventory) {
             EventHandler.Instance.HandleItemsAdded(Game.Instance.Player.Inventory, item, 1);
         }
-
         foreach (var item in Game.Instance.Player.PartyAndPets.SelectMany(pap => pap.Inventory.Items)) {
             EventHandler.Instance.HandleItemsAdded(Game.Instance.Player.Inventory, item, 1);
         }
     }
-
     public static Dictionary<string, (string, string)> getDictForSlot(Slot slot) {
         if (((int)slot) >= 10) // cant do comparisons in a switch statement, and this saves a few lines.
         {
             return EntityPartStorage.perSave.Weapons[weaponSet][mainHand][getAnimStyleFromSlot(slot)];
         }
-
         switch (slot) {
             case Slot.Shoulder: return EntityPartStorage.perSave.Shoulders;
             case Slot.Ring1: return EntityPartStorage.perSave.Ring1;
@@ -229,20 +213,16 @@ public static class Main {
             default: return null;
         }
     }
-
     public static Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>> getDictForSlot(
         WeaponAnimationStyle style, bool mainHand2, int weaponSet) {
         return EntityPartStorage.perSave.Weapons[weaponSet][mainHand2];
     }
-
-    public static void UpdateEquippedItems(Slot slot, bool removeOld, string oldId, bool addNew = false,
-        string newId = "") {
+    public static void UpdateEquippedItems(Slot slot, bool removeOld, string oldId, bool addNew = false, string newId = "") {
         if (removeOld) {
             var oldBp = ResourcesLibrary.BlueprintsCache.Load(oldId) as BlueprintItemEquipment;
             var EEs = ExtractEEs(oldBp);
             pickedUnit.View.CharacterAvatar.RemoveEquipmentEntities(EEs);
         }
-
         PartUnitBody body = pickedUnit.OwnerEntity.Body;
         ItemSlot itemSlot = null;
         switch (slot) {
@@ -277,33 +257,26 @@ public static class Main {
                 itemSlot = body.Armor;
             }; break;
         }
-
         if (addNew) {
             getDictForSlot(slot)[pickedUnit.UniqueId] = (newId, GetKey(newId));
             EntityPartStorage.SavePerSaveSettings();
         }
 
         pickedUnit.View.HandsEquipment.ChangeEquipmentWithoutAnimation();
-
         if (itemSlot == null) return;
         EventBus.RaiseEvent<IUnitEquipmentHandler>(pickedUnit,
             delegate(IUnitEquipmentHandler h) { h.HandleEquipmentSlotUpdated(itemSlot, itemSlot.MaybeItem ?? null); },
             true);
     }
-
-    public static IEnumerable<EquipmentEntity> ExtractEEs(BlueprintItemEquipment blueprintItemEquipment,
-        BaseUnitEntity unit = null) {
+    public static IEnumerable<EquipmentEntity> ExtractEEs(BlueprintItemEquipment blueprintItemEquipment, BaseUnitEntity unit = null) {
         unit ??= pickedUnit;
         IEnumerable<EquipmentEntity> enumerable;
         Gender gender = unit.Gender;
         BlueprintRace race = unit.Progression.Race;
         Race race2 = ((race != null) ? race.RaceId : Race.Human);
-        enumerable = ((blueprintItemEquipment != null && blueprintItemEquipment.EquipmentEntity != null)
-            ? blueprintItemEquipment.EquipmentEntity.Load(gender, race2)
-            : Enumerable.Empty<EquipmentEntity>());
+        enumerable = ((blueprintItemEquipment != null && blueprintItemEquipment.EquipmentEntity != null) ? blueprintItemEquipment.EquipmentEntity.Load(gender, race2) : Enumerable.Empty<EquipmentEntity>());
         return enumerable;
     }
-
     public static void OverrideGUI() {
         Div();
         Label($"Overrides for {SlotName[currentBrowserSlot]}".color(RGBA.lime).Bold());
@@ -314,7 +287,6 @@ public static class Main {
                 name = Override.Item2.color(RGBA.aqua);
                 hasOverride = true;
             }
-
             ActionButton("Reset Override", () => {
                 if (hasOverride) {
                     getDictForSlot(currentBrowserSlot).Remove(pickedUnit.UniqueId);
@@ -325,7 +297,6 @@ public static class Main {
             Label($"Current Override: {name}");
         }
     }
-
     public static void ResetBrowsers() {
         ShoulderBrowser.ResetSearch();
         Ring1Browser.ResetSearch();
@@ -335,7 +306,6 @@ public static class Main {
         GlovesBrowser.ResetSearch();
         FeetBrowser.ResetSearch();
         ArmorBrowser.ResetSearch();
-
         // weapon browsers reset
         KnifeBrowser.ResetSearch();
         FencingBrowser.ResetSearch();
@@ -355,7 +325,6 @@ public static class Main {
         OneHandedHammerBrowser.ResetSearch();
         TwoHandedHammerBrowser.ResetSearch();
     }
-
     public static void OnGUI(UnityModManager.ModEntry modEntry) {
         var units = new List<BaseUnitEntity>() { Game.Instance?.Player?.MainCharacterEntity };
         units.AddRange(Game.Instance.Player.ActiveCompanions ?? new());
@@ -368,17 +337,13 @@ public static class Main {
                 selectedIndex = 0;
                 pickedUnit = null;
             }
-
             int newIndex = GUILayout.SelectionGrid(selectedIndex, units.Select(m => m.CharacterName).ToArray(), 6);
             if (selectedIndex != newIndex || pickedUnit == null) {
                 pickedUnit = units[newIndex];
                 ResetBrowsers();
             }
-
             Div();
-            if (TogglePrivate(
-                    "Show Items without Equipment Entity (those are by default hidden because I assume they don't change visuals). This could be helpful if you don't want equipment in a slot to show because you can just override the slot with an item with no visuals.",
-                    ref settings.shouldShowItemsWithoutEE, false, false, 0, AutoWidth())) {
+            if (TogglePrivate("Show Items without Equipment Entity (those are by default hidden because I assume they don't change visuals). This could be helpful if you don't want equipment in a slot to show because you can just override the slot with an item with no visuals.", ref settings.shouldShowItemsWithoutEE, false, false, 0, AutoWidth())) {
                 ResetBrowsers();
             }
 
@@ -437,7 +402,6 @@ public static class Main {
             if (showArmorBrowser) {
                 BrowserGUI<BlueprintItemArmor>(ArmorBrowser, EntityPartStorage.perSave.KnownArmor);
             }
-
             // Weapon browsers.
             Div();
             using (VerticalScope()) {
@@ -611,12 +575,10 @@ public static class Main {
             Label("No Units to select. Load a safe first!".color(RGBA.medred).Bold());
         }
     }
-
     public static string GetKey(string id) {
         if (KeyCache.TryGetValue(id, out var ret)) {
             return ret;
         }
-
         var blueprint = ResourcesLibrary.BlueprintsCache.Load(id);
         try {
             if (blueprint is IUIDataProvider uiDataProvider) {
@@ -624,37 +586,29 @@ public static class Main {
                 bool isEmpty = true;
                 try {
                     isEmpty = string.IsNullOrEmpty(uiDataProvider.Name);
+                } catch (NullReferenceException) {
                 }
-                catch (NullReferenceException) {
-                }
-
                 if (isEmpty) {
                     name = blueprint.name;
-                }
-                else {
+                } else {
                     name = uiDataProvider.Name;
                     if (name == "<null>" || name.StartsWith("[unknown key: ")) {
                         name = blueprint.name;
-                    }
-                    else {
+                    } else {
                         name += $" : {blueprint.name}";
                     }
                 }
-
                 KeyCache[id] = name + $" ({id})";
                 return KeyCache[id];
             }
-
             KeyCache[id] = blueprint.name + $" ({id})";
             return KeyCache[id];
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             log.Log(ex.ToString());
             log.Log($"-------{blueprint}-----{id}");
             return $"Error ({id})";
         }
     }
-
     public static void SpriteGUI(string id, float scaling = 0.5f, int targetWidth = 0) {
         var blueprint = ResourcesLibrary.BlueprintsCache.Load(id) as BlueprintItemEquipment;
         var sprite = blueprint.Icon;
@@ -663,44 +617,36 @@ public static class Main {
             if (targetWidth == 0) {
                 w = sprite.rect.width * scaling;
                 h = w;
-            }
-            else {
+            } else {
                 w = targetWidth;
                 h = w;
             }
-        }
-        else {
+        } else {
             if (targetWidth == 0) {
                 w = sprite.rect.width * scaling;
                 h = sprite.rect.height * scaling;
-            }
-            else {
+            } else {
                 w = targetWidth;
                 h = targetWidth * (sprite.rect.height / sprite.rect.width);
             }
         }
-
         using (VerticalScope(GUILayout.Width(w + 10))) {
             bool hasOverride = false;
             if (getDictForSlot(currentBrowserSlot).TryGetValue(pickedUnit.UniqueId, out var Override)) {
                 hasOverride = true;
             }
-
             if (sprite == null) {
                 if (GUILayout.Button("No Icon", rarityStyle, GUILayout.Width(w), GUILayout.Height(h))) {
                     UpdateEquippedItems(currentBrowserSlot, hasOverride, Override.Item1, true, id);
                 }
-            }
-            else {
+            } else {
                 if (GUILayout.Button(sprite.texture, rarityStyle, GUILayout.Width(w), GUILayout.Height(h))) {
                     UpdateEquippedItems(currentBrowserSlot, hasOverride, Override.Item1, true, id);
                 }
             }
-
             Label(GetKey(id));
         }
     }
-
     private static void WeaponSlotSelector() {
         if (mainHand) {
             Space(5);
@@ -712,23 +658,19 @@ public static class Main {
             ActionButton("Current Hand: Off", () => mainHand = !mainHand, AutoWidth());
             Space(5);
         }
-
         GUILayout.Label("Weapon set");
         using (HorizontalScope()) {
             using (VerticalScope(Width(10))) {
                 if (GUILayout.Toggle(!m_weaponSet, "1", AutoWidth()))
                     m_weaponSet = false;
             }
-
             using (VerticalScope(Width(10))) {
                 if (GUILayout.Toggle(m_weaponSet, "2", AutoWidth()))
                     m_weaponSet = true;
             }
         }
-
         Space(5);
     }
-
     public static void BrowserGUI<T>(Browser<string, string> browser, HashSet<string> knownIds,
         WeaponAnimationStyle animStyle = WeaponAnimationStyle.None)
         where T : BlueprintItemEquipment {
@@ -743,14 +685,11 @@ public static class Main {
                 }
                 else {
                     available = () =>
-                        Kingmaker.Cheats.Utilities.GetBlueprintGuids<T>()
-                            .Where(item => MatchesAnimStyle(item, animStyle));
-                    current = knownIds.Where(item => MatchesAnimStyle(item, animStyle));
+                        Kingmaker.Cheats.Utilities.GetBlueprintGuids<T>().Where(item => MatchesAnimStyle(item, animStyle)); current = knownIds.Where(item => MatchesAnimStyle(item, animStyle));
                 }
 
                 browser.OnGUI(current,
-                    available, id => id,
-                    GetKey, id => [GetKey(id)], null, null, null, 50, true, true, "", false, null,
+                    available, id => id, GetKey, id => [GetKey(id)], null, null, null, 50, true, true, "", false, null,
                     (definitions, _currentDict) => {
                         var count = definitions.Count;
                         int itemsPerRow = 12;
@@ -761,8 +700,7 @@ public static class Main {
                                     for (; ii < Math.Min(tmp + itemsPerRow, count); ii++) {
                                         var customID = definitions[ii];
                                         // 6 Portraits per row; 692px per image + buffer
-                                        SpriteGUI(customID, 0.5f,
-                                            (int)(Params.WindowWidth - itemsPerRow * 200.0f / 6.0f) / itemsPerRow);
+                                        SpriteGUI(customID, 0.5f, (int)(Params.WindowWidth - itemsPerRow * 200.0f / 6.0f) / itemsPerRow);
                                     }
                                 }
                             }
@@ -771,18 +709,15 @@ public static class Main {
             }
         }
     }
-
     public static bool MatchesAnimStyle(string id, WeaponAnimationStyle animStyle) {
         var bp = ResourcesLibrary.BlueprintsCache.Load(id);
         if ((bp as BlueprintItemEquipmentHand).VisualParameters.AnimStyle == animStyle)
             return true;
         return false;
     }
-
     public static bool HasEEsForCurrentUnit(string id) {
         var bp = ResourcesLibrary.BlueprintsCache.Load(id);
-        bool hasEEs = (ExtractEEs(bp as BlueprintItemEquipment, pickedUnit)
-            ?.Count() ?? 0) > 0;
+        bool hasEEs = (ExtractEEs(bp as BlueprintItemEquipment, pickedUnit)?.Count() ?? 0) > 0;
         return hasEEs || settings.shouldShowItemsWithoutEE;
     }
 
