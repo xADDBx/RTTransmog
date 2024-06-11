@@ -672,7 +672,19 @@ public static class Main {
         using (HorizontalScope()) {
             Space(25);
             using (VerticalScope()) {
-                browser.OnGUI(knownIds.Where(HasEEsForCurrentUnit), () => Kingmaker.Cheats.Utilities.GetBlueprintGuids<T>().Where(HasEEsForCurrentUnit), id => id, GetKey, id => [GetKey(id)], null, null, null, 50, true, true, "", false, null,
+                Func<IEnumerable<string>> available;
+                IEnumerable<string> current;
+                if (animStyle == WeaponAnimationStyle.None) {
+                    available = () => Kingmaker.Cheats.Utilities.GetBlueprintGuids<T>().Where(HasEEsForCurrentUnit);
+                    current = knownIds.Where(HasEEsForCurrentUnit);
+                }
+                else {
+                    available = () =>
+                        Kingmaker.Cheats.Utilities.GetBlueprintGuids<T>()
+                            .Where(item => MatchesAnimStyle(item, animStyle));
+                    current = knownIds.Where(item => MatchesAnimStyle(item, animStyle));
+                }
+                browser.OnGUI(current, available, id => id, GetKey, id => [GetKey(id)], null, null, null, 50, true, true, "", false, null,
                             (definitions, _currentDict) => {
                                 var count = definitions.Count;
                                 int itemsPerRow = 12;
