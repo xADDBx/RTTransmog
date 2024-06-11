@@ -57,11 +57,60 @@ namespace RTTransmog {
             public Dictionary<string, ValueTuple<string, string>> Gloves = new();
             public Dictionary<string, ValueTuple<string, string>> Feet = new();
             public Dictionary<string, ValueTuple<string, string>> Armor = new();
-            
-            // gotta initialize
-            public Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>> Weapons = new()
+
+            public Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[] Weapons
             {
-                {WeaponAnimationStyle.Knife, new()},
+                get
+                {
+                    if (m_Weapons == null)
+                    {
+                        m_Weapons = new Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[2];
+                        var animStyles = new[]
+                        {
+                            WeaponAnimationStyle.Knife,
+                            WeaponAnimationStyle.Fencing,
+                            WeaponAnimationStyle.AxeTwoHanded,
+                            WeaponAnimationStyle.Assault,
+                            WeaponAnimationStyle.BrutalOneHanded,
+                            WeaponAnimationStyle.BrutalTwoHanded,
+                            WeaponAnimationStyle.HeavyOnHip,
+                            WeaponAnimationStyle.Pistol,
+                            WeaponAnimationStyle.Rifle,
+                            WeaponAnimationStyle.Fist,
+                            WeaponAnimationStyle.Staff,
+                            WeaponAnimationStyle.EldarRifle,
+                            WeaponAnimationStyle.EldarAssault,
+                            WeaponAnimationStyle.EldarHeavyOnHip,
+                            WeaponAnimationStyle.EldarHeavyOnShoulder,
+                            WeaponAnimationStyle.OneHandedHammer,
+                            WeaponAnimationStyle.TwoHandedHammer
+                        };
+                        for (int i = 0; i < 2; i++)
+                        {
+                            m_Weapons[i] = new();
+                                
+                            m_Weapons[i][true] = new();
+                            m_Weapons[i][false] = new();
+                            
+                            foreach (var animStyle in animStyles)
+                            {
+                                m_Weapons[i][true][animStyle] = new();
+                                m_Weapons[i][false][animStyle] = new();
+                            }
+                        }
+                    }
+
+                    
+                    return m_Weapons;
+                }
+            }
+
+            private Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[]
+                m_Weapons; 
+            // gotta initialize
+            /*public Dictionary<bool,Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>> m_Weapons = new()
+            {
+                {true, new(){{WeaponAnimationStyle.Knife, new()},
                 {WeaponAnimationStyle.Fencing, new()},
                 {WeaponAnimationStyle.AxeTwoHanded, new()},
                 {WeaponAnimationStyle.Assault, new()},
@@ -77,8 +126,29 @@ namespace RTTransmog {
                 {WeaponAnimationStyle.EldarHeavyOnHip, new()},
                 {WeaponAnimationStyle.EldarHeavyOnShoulder, new()},
                 {WeaponAnimationStyle.OneHandedHammer, new()},
-                {WeaponAnimationStyle.TwoHandedHammer, new()},
-            };
+                {WeaponAnimationStyle.TwoHandedHammer, new()},}},
+                
+                {false, new(){{WeaponAnimationStyle.Knife, new()},
+                    {WeaponAnimationStyle.Fencing, new()},
+                    {WeaponAnimationStyle.AxeTwoHanded, new()},
+                    {WeaponAnimationStyle.Assault, new()},
+                    {WeaponAnimationStyle.BrutalOneHanded, new()},
+                    {WeaponAnimationStyle.BrutalTwoHanded, new()},
+                    {WeaponAnimationStyle.HeavyOnHip, new()},
+                    {WeaponAnimationStyle.Pistol, new()},
+                    {WeaponAnimationStyle.Rifle, new()},
+                    {WeaponAnimationStyle.Fist, new()},
+                    {WeaponAnimationStyle.Staff, new()},
+                    {WeaponAnimationStyle.EldarRifle, new()},
+                    {WeaponAnimationStyle.EldarAssault, new()},
+                    {WeaponAnimationStyle.EldarHeavyOnHip, new()},
+                    {WeaponAnimationStyle.EldarHeavyOnShoulder, new()},
+                    {WeaponAnimationStyle.OneHandedHammer, new()},
+                    {WeaponAnimationStyle.TwoHandedHammer, new()},}
+                    
+                }
+                
+            };*/
             //
 
         }

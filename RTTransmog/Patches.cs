@@ -60,9 +60,9 @@ namespace RTTransmog {
             return false;
         }
         
-        public static bool CheckForOverride(WeaponAnimationStyle animStyle, BaseUnitEntity unit, out (string, string) Override) {
+        public static bool CheckForOverride(WeaponAnimationStyle animStyle, BaseUnitEntity unit, out (string, string) Override, bool mainHand_2, int weaponSet) {
             Main.log.Log($"Checking for anim style: {animStyle}");
-            if (Main.getDictForSlot(animStyle).TryGetValue(animStyle, out var styleDictionary) && styleDictionary.TryGetValue(unit.UniqueId, out var ret))
+            if (Main.getDictForSlot(animStyle,mainHand_2, weaponSet).TryGetValue(animStyle, out var styleDictionary) && styleDictionary.TryGetValue(unit.UniqueId, out var ret))
             {
                 Override = ret;
                 return true;
@@ -98,14 +98,11 @@ namespace RTTransmog {
                 public static void ReplaceVisibleItemBlueprintInHand(UnitViewHandSlotData __instance, ref BlueprintItemEquipmentHand __result)
                 {
                     if (__result == null) return;
-                    //if (((BlueprintItemEquipmentHand)__instance.VisibleItem?.Blueprint)?.VisualParameters?.AnimStyle ==
-                    //    WeaponAnimationStyle.None) return;
-                    if (CheckForOverride(__result.VisualParameters.AnimStyle, __instance.Owner, out var Override)) {
+                    if (CheckForOverride(__result.VisualParameters.AnimStyle, __instance.Owner, out var Override, __instance.m_IsMainHand, __instance.m_SlotIdx)) {
                         __result = (BlueprintItemEquipmentHand)ResourcesLibrary.BlueprintsCache.Load(Override.Item1);
                     }
                 }
             }
-            
             internal static class UnitAnimationCallbackReceiver_Patches {
 
             }

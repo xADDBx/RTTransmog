@@ -25,6 +25,8 @@ using Kingmaker.PubSubSystem.Core;
 using Kingmaker.PubSubSystem;
 using Kingmaker.Blueprints.Items;
 using Kingmaker.View.Animation;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 namespace RTTransmog;
 
@@ -73,8 +75,9 @@ public static class Main
 
     //
     private static Dictionary<string, string> KeyCache = new();
-    private static bool showMainhandWeaponBrowser = false;
-    private static bool showOffhandWeaponBrowser = false;
+
+    //private static bool showMainhandWeaponBrowser = false;
+    //private static bool showOffhandWeaponBrowser = false;
     private static bool showShoulderBrowser = false;
     private static bool showRing1Browser = false;
     private static bool showRing2Browser = false;
@@ -86,7 +89,15 @@ public static class Main
 
     //
     private static bool showWeaponBrowsers = false;
-    
+    private static bool mainHand = true;
+
+    private static int weaponSet
+    {
+        get { return (m_weaponSet == false ? 0 : 1); }
+    }
+
+    private static bool m_weaponSet = false; //false is set 0, true is set 1
+
     private static bool showKnifeBrowser = false;
     private static bool showFencingBrowser = false;
     private static bool showAxeTwoHandedBrowser = false;
@@ -123,7 +134,7 @@ public static class Main
         Feet,
         Armor,
 
-        // one per anim style
+        // one per anim style, except empty/unused ones.
         Knife,
         Fencing,
         AxeTwoHanded,
@@ -142,6 +153,37 @@ public static class Main
         OneHandedHammer,
         TwoHandedHammer,
     }
+
+    private static Dictionary<Slot, string> SlotName = new Dictionary<Slot, string>()
+    {
+        { Slot.Mainhand, "Mainhand" },
+        { Slot.Offhand, "Offhand" },
+        { Slot.Shoulder, "Shoulders" },
+        { Slot.Ring1, "Ring 1" },
+        { Slot.Ring2, "Ring 2" },
+        { Slot.Neck, "Neck" },
+        { Slot.Head, "Head" },
+        { Slot.Gloves, "Gloves" },
+        { Slot.Feet, "Feet" },
+        { Slot.Armor, "Armor" },
+        { Slot.Knife, "Knives" },
+        { Slot.Fencing, "Fencing" },
+        { Slot.AxeTwoHanded, "Two-handed Axes" },
+        { Slot.Assault, "Assault (Rifles/Shotguns)" },
+        { Slot.BrutalOneHanded, "Brutal One-handed" },
+        { Slot.BrutalTwoHanded, "Brutal Two-handed" },
+        { Slot.HeavyOnHip, "Heavy Weapons" },
+        { Slot.Pistol, "Pistols" },
+        { Slot.Rifle, "Rifles" },
+        { Slot.Fist, "Fist Weapons" },
+        { Slot.Staff, "Staves" },
+        { Slot.EldarRifle, "Eldar Rifles" },
+        { Slot.EldarAssault, "Eldar Assault (Rifles/Shotguns)" },
+        { Slot.EldarHeavyOnHip, "Eldar Heavy Weapons (Hip)" },
+        { Slot.EldarHeavyOnShoulder, "Eldar Heavy Weapons (Shoulder)" },
+        { Slot.OneHandedHammer, "One-handed Hammers" },
+        { Slot.TwoHandedHammer, "Two-handed Hammers" },
+    };
 
     public static WeaponAnimationStyle getAnimStyleFromSlot(Slot slot) // Needed, otherwise the indices are misaligned.
     {
@@ -189,9 +231,9 @@ public static class Main
 
     public static Dictionary<string, (string, string)> getDictForSlot(Slot slot)
     {
-        if (((int)slot) >= 10) // cant do comparisons in a switch statement, and this saves like 10 lines.
+        if (((int)slot) >= 10) // cant do comparisons in a switch statement, and this saves a few lines.
         {
-            return EntityPartStorage.perSave.Weapons[getAnimStyleFromSlot(slot)];
+            return EntityPartStorage.perSave.Weapons[weaponSet][mainHand][getAnimStyleFromSlot(slot)];
         }
 
         switch (slot)
@@ -211,9 +253,9 @@ public static class Main
     }
 
     public static Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>> getDictForSlot(
-        WeaponAnimationStyle style)
+        WeaponAnimationStyle style, bool mainHand2, int weaponSet)
     {
-        return EntityPartStorage.perSave.Weapons;
+        return EntityPartStorage.perSave.Weapons[weaponSet][mainHand2];
     }
 
     public static void UpdateEquippedItems(Slot slot, bool removeOld, string oldId, bool addNew = false,
@@ -297,9 +339,9 @@ public static class Main
             getDictForSlot(slot)[pickedUnit.UniqueId] = (newId, GetKey(newId));
             EntityPartStorage.SavePerSaveSettings();
         }
-        
+
         pickedUnit.View.HandsEquipment.ChangeEquipmentWithoutAnimation();
-        
+
         if (itemSlot == null) return;
         EventBus.RaiseEvent<IUnitEquipmentHandler>(pickedUnit,
             delegate(IUnitEquipmentHandler h) { h.HandleEquipmentSlotUpdated(itemSlot, itemSlot.MaybeItem ?? null); },
@@ -323,7 +365,7 @@ public static class Main
     public static void OverrideGUI()
     {
         Div();
-        Label($"Overrides for {currentBrowserSlot}".color(RGBA.lime).Bold());
+        Label($"Overrides for {SlotName[currentBrowserSlot]}".color(RGBA.lime).Bold());
         using (HorizontalScope())
         {
             bool hasOverride = false;
@@ -428,7 +470,7 @@ public static class Main
             */
             currentBrowserSlot = Slot.Shoulder;
             OverrideGUI();
-            DisclosureToggle("Show Shoulder Browser", ref showShoulderBrowser);
+            DisclosureToggle($"Show {SlotName[Slot.Shoulder]} Browser", ref showShoulderBrowser);
             if (showShoulderBrowser)
             {
                 BrowserGUI<BlueprintItemEquipmentShoulders>(ShoulderBrowser, EntityPartStorage.perSave.KnownShoulders);
@@ -436,7 +478,7 @@ public static class Main
 
             currentBrowserSlot = Slot.Ring1;
             OverrideGUI();
-            DisclosureToggle("Show Ring1 Browser", ref showRing1Browser);
+            DisclosureToggle($"Show {SlotName[Slot.Ring1]} Browser", ref showRing1Browser);
             if (showRing1Browser)
             {
                 BrowserGUI<BlueprintItemEquipmentRing>(Ring1Browser, EntityPartStorage.perSave.KnownRing);
@@ -444,7 +486,7 @@ public static class Main
 
             currentBrowserSlot = Slot.Ring2;
             OverrideGUI();
-            DisclosureToggle("Show Ring2 Browser", ref showRing2Browser);
+            DisclosureToggle($"Show {SlotName[Slot.Ring2]} Browser", ref showRing2Browser);
             if (showRing2Browser)
             {
                 BrowserGUI<BlueprintItemEquipmentRing>(Ring2Browser, EntityPartStorage.perSave.KnownRing);
@@ -452,7 +494,7 @@ public static class Main
 
             currentBrowserSlot = Slot.Neck;
             OverrideGUI();
-            DisclosureToggle("Show Neck Browser", ref showNeckBrowser);
+            DisclosureToggle($"Show {SlotName[Slot.Neck]} Browser", ref showNeckBrowser);
             if (showNeckBrowser)
             {
                 BrowserGUI<BlueprintItemEquipmentNeck>(NeckBrowser, EntityPartStorage.perSave.KnownNeck);
@@ -460,7 +502,7 @@ public static class Main
 
             currentBrowserSlot = Slot.Head;
             OverrideGUI();
-            DisclosureToggle("Show Head Browser", ref showHeadBrowser);
+            DisclosureToggle($"Show {SlotName[Slot.Head]} Browser", ref showHeadBrowser);
             if (showHeadBrowser)
             {
                 BrowserGUI<BlueprintItemEquipmentHead>(HeadBrowser, EntityPartStorage.perSave.KnownHead);
@@ -468,7 +510,7 @@ public static class Main
 
             currentBrowserSlot = Slot.Gloves;
             OverrideGUI();
-            DisclosureToggle("Show Gloves Browser", ref showGlovesBrowser);
+            DisclosureToggle($"Show {SlotName[Slot.Gloves]} Browser", ref showGlovesBrowser);
             if (showGlovesBrowser)
             {
                 BrowserGUI<BlueprintItemEquipmentGloves>(GlovesBrowser, EntityPartStorage.perSave.KnownGloves);
@@ -476,7 +518,7 @@ public static class Main
 
             currentBrowserSlot = Slot.Feet;
             OverrideGUI();
-            DisclosureToggle("Show Feet Browser", ref showFeetBrowser);
+            DisclosureToggle($"Show {SlotName[Slot.Feet]} Browser", ref showFeetBrowser);
             if (showFeetBrowser)
             {
                 BrowserGUI<BlueprintItemEquipmentFeet>(FeetBrowser, EntityPartStorage.perSave.KnownFeet);
@@ -484,25 +526,41 @@ public static class Main
 
             currentBrowserSlot = Slot.Armor;
             OverrideGUI();
-            DisclosureToggle("Show Armor Browser", ref showArmorBrowser);
+            DisclosureToggle($"Show {SlotName[Slot.Armor]} Browser", ref showArmorBrowser);
             if (showArmorBrowser)
             {
                 BrowserGUI<BlueprintItemArmor>(ArmorBrowser, EntityPartStorage.perSave.KnownArmor);
             }
 
             // Weapon browsers.
+            Div();
             using (VerticalScope())
             {
                 Space(10);
-                DisclosureToggle("Show Weapon Browsers", ref showWeaponBrowsers);
+                DisclosureToggle($"Show Weapon Browsers", ref showWeaponBrowsers);
                 Space(10);
             }
 
             if (showWeaponBrowsers)
             {
+                if (mainHand)
+                {
+                    Space(5);
+                    ActionButton("Current Hand: Main", () => mainHand = !mainHand, AutoWidth());
+                    Space(5);
+                }
+                else
+                {
+                    Space(5);
+                    ActionButton("Current Hand: Off", () => mainHand = !mainHand, AutoWidth());
+                    Space(5);
+                }
+
+                WeaponSlotSelector();
+
                 currentBrowserSlot = Slot.Knife;
                 OverrideGUI();
-                DisclosureToggle("Show Knife Browser", ref showKnifeBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.Knife]} Browser", ref showKnifeBrowser);
                 if (showKnifeBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(KnifeBrowser,
@@ -512,7 +570,7 @@ public static class Main
 
                 currentBrowserSlot = Slot.Fencing;
                 OverrideGUI();
-                DisclosureToggle("Show Fencing Browser", ref showFencingBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.Fencing]} Browser", ref showFencingBrowser);
                 if (showFencingBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(FencingBrowser,
@@ -522,7 +580,7 @@ public static class Main
 
                 currentBrowserSlot = Slot.AxeTwoHanded;
                 OverrideGUI();
-                DisclosureToggle("Show AxeTwoHanded Browser", ref showAxeTwoHandedBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.AxeTwoHanded]} Browser", ref showAxeTwoHandedBrowser);
                 if (showAxeTwoHandedBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(AxeTwoHandedBrowser,
@@ -532,7 +590,7 @@ public static class Main
 
                 currentBrowserSlot = Slot.Assault;
                 OverrideGUI();
-                DisclosureToggle("Show Assault Browser", ref showAssaultBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.Assault]} Browser", ref showAssaultBrowser);
                 if (showAssaultBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(AssaultBrowser,
@@ -542,7 +600,8 @@ public static class Main
 
                 currentBrowserSlot = Slot.BrutalOneHanded;
                 OverrideGUI();
-                DisclosureToggle("Show BrutalOneHanded Browser", ref showBrutalOneHandedBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.BrutalOneHanded]} Browser",
+                    ref showBrutalOneHandedBrowser);
                 if (showBrutalOneHandedBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(BrutalOneHandedBrowser,
@@ -552,7 +611,8 @@ public static class Main
 
                 currentBrowserSlot = Slot.BrutalTwoHanded;
                 OverrideGUI();
-                DisclosureToggle("Show BrutalTwoHanded Browser", ref showBrutalTwoHandedBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.BrutalTwoHanded]} Browser",
+                    ref showBrutalTwoHandedBrowser);
                 if (showBrutalTwoHandedBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(BrutalTwoHandedBrowser,
@@ -562,17 +622,17 @@ public static class Main
 
                 currentBrowserSlot = Slot.HeavyOnHip;
                 OverrideGUI();
-                DisclosureToggle("Show HeavyOnHip Browser", ref showHeavyOnHipBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.HeavyOnHip]} Browser", ref showHeavyOnHipBrowser);
                 if (showHeavyOnHipBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(HeavyOnHipBrowser,
                         EntityPartStorage.perSave.KnownWeapons[getAnimStyleFromSlot(Slot.HeavyOnHip)],
                         animStyle: WeaponAnimationStyle.HeavyOnHip);
                 }
-                
+
                 currentBrowserSlot = Slot.Pistol;
                 OverrideGUI();
-                DisclosureToggle("Show Pistol Browser", ref showPistolBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.Pistol]} Browser", ref showPistolBrowser);
                 if (showPistolBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(PistolBrowser,
@@ -582,7 +642,7 @@ public static class Main
 
                 currentBrowserSlot = Slot.Rifle;
                 OverrideGUI();
-                DisclosureToggle("Show Rifle Browser", ref showRifleBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.Rifle]} Browser", ref showRifleBrowser);
                 if (showRifleBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(RifleBrowser,
@@ -592,7 +652,7 @@ public static class Main
 
                 currentBrowserSlot = Slot.Fist;
                 OverrideGUI();
-                DisclosureToggle("Show Fist Browser", ref showFistBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.Fist]} Browser", ref showFistBrowser);
                 if (showFistBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(FistBrowser,
@@ -602,7 +662,7 @@ public static class Main
 
                 currentBrowserSlot = Slot.Staff;
                 OverrideGUI();
-                DisclosureToggle("Show Staff Browser", ref showStaffBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.Staff]} Browser", ref showStaffBrowser);
                 if (showStaffBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(StaffBrowser,
@@ -612,7 +672,7 @@ public static class Main
 
                 currentBrowserSlot = Slot.EldarRifle;
                 OverrideGUI();
-                DisclosureToggle("Show EldarRifle Browser", ref showEldarRifleBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.EldarRifle]} Browser", ref showEldarRifleBrowser);
                 if (showEldarRifleBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(EldarRifleBrowser,
@@ -622,7 +682,7 @@ public static class Main
 
                 currentBrowserSlot = Slot.EldarAssault;
                 OverrideGUI();
-                DisclosureToggle("Show EldarAssault Browser", ref showEldarAssaultBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.EldarAssault]} Browser", ref showEldarAssaultBrowser);
                 if (showEldarAssaultBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(EldarAssaultBrowser,
@@ -632,7 +692,7 @@ public static class Main
 
                 currentBrowserSlot = Slot.EldarHeavyOnHip;
                 OverrideGUI();
-                DisclosureToggle("Show EldarHeavyOnHip Browser", ref showEldarHeavyOnHipBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.EldarHeavyOnHip]} Browser", ref showEldarHeavyOnHipBrowser);
                 if (showEldarHeavyOnHipBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(EldarHeavyOnHipBrowser,
@@ -642,7 +702,8 @@ public static class Main
 
                 currentBrowserSlot = Slot.EldarHeavyOnShoulder;
                 OverrideGUI();
-                DisclosureToggle("Show EldarHeavyOnShoulder Browser", ref showEldarHeavyOnShoulderBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.EldarHeavyOnShoulder]} Browser",
+                    ref showEldarHeavyOnShoulderBrowser);
                 if (showEldarHeavyOnShoulderBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(EldarHeavyOnShoulderBrowser,
@@ -652,7 +713,7 @@ public static class Main
 
                 currentBrowserSlot = Slot.OneHandedHammer;
                 OverrideGUI();
-                DisclosureToggle("Show OneHandedHammer Browser", ref showOneHandedHammerBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.OneHandedHammer]} Browser", ref showOneHandedHammerBrowser);
                 if (showOneHandedHammerBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(OneHandedHammerBrowser,
@@ -662,7 +723,7 @@ public static class Main
 
                 currentBrowserSlot = Slot.TwoHandedHammer;
                 OverrideGUI();
-                DisclosureToggle("Show TwoHandedHammer Browser", ref showTwoHandedHammerBrowser);
+                DisclosureToggle($"Show {SlotName[Slot.TwoHandedHammer]} Browser", ref showTwoHandedHammerBrowser);
                 if (showTwoHandedHammerBrowser)
                 {
                     BrowserGUI<BlueprintItemEquipmentHand>(TwoHandedHammerBrowser,
@@ -670,6 +731,8 @@ public static class Main
                         animStyle: WeaponAnimationStyle.TwoHandedHammer);
                 }
             }
+
+            Space(5);
         }
         else
         {
@@ -790,6 +853,28 @@ public static class Main
         }
     }
 
+    private static void WeaponSlotSelector()
+    {
+        GUILayout.Label("Weapon set");
+        using (HorizontalScope())
+        {
+            using (VerticalScope(Width(10)))
+            {
+                if (GUILayout.Toggle(!m_weaponSet, "1", AutoWidth()))
+                    m_weaponSet = false;
+            }
+
+            using (VerticalScope(Width(10)))
+            {
+                if (GUILayout.Toggle(m_weaponSet, "2", AutoWidth()))
+                    m_weaponSet = true;
+            }
+        }
+
+
+        Space(10);
+    }
+
     public static void BrowserGUI<T>(Browser<string, string> browser, HashSet<string> knownIds,
         WeaponAnimationStyle animStyle = WeaponAnimationStyle.None)
         where T : BlueprintItemEquipment
@@ -854,7 +939,6 @@ public static class Main
     public static bool HasEEsForCurrentUnit(string id)
     {
         var bp = ResourcesLibrary.BlueprintsCache.Load(id);
-        //if (bp.GetType().IsSubclassOf(typeof(BlueprintItemEquipmentHand))) return true; // so it actually shows up w/o ticking the box to show things with no EEs // TEMP, REMOVE LATER
         bool hasEEs = (ExtractEEs(bp as BlueprintItemEquipment, pickedUnit)
             ?.Count() ?? 0) > 0;
         return hasEEs || settings.shouldShowItemsWithoutEE;
