@@ -107,49 +107,6 @@ namespace RTTransmog {
 
             private Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[]
                 m_Weapons; 
-            // gotta initialize
-            /*public Dictionary<bool,Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>> m_Weapons = new()
-            {
-                {true, new(){{WeaponAnimationStyle.Knife, new()},
-                {WeaponAnimationStyle.Fencing, new()},
-                {WeaponAnimationStyle.AxeTwoHanded, new()},
-                {WeaponAnimationStyle.Assault, new()},
-                {WeaponAnimationStyle.BrutalOneHanded, new()},
-                {WeaponAnimationStyle.BrutalTwoHanded, new()},
-                {WeaponAnimationStyle.HeavyOnHip, new()},
-                {WeaponAnimationStyle.Pistol, new()},
-                {WeaponAnimationStyle.Rifle, new()},
-                {WeaponAnimationStyle.Fist, new()},
-                {WeaponAnimationStyle.Staff, new()},
-                {WeaponAnimationStyle.EldarRifle, new()},
-                {WeaponAnimationStyle.EldarAssault, new()},
-                {WeaponAnimationStyle.EldarHeavyOnHip, new()},
-                {WeaponAnimationStyle.EldarHeavyOnShoulder, new()},
-                {WeaponAnimationStyle.OneHandedHammer, new()},
-                {WeaponAnimationStyle.TwoHandedHammer, new()},}},
-                
-                {false, new(){{WeaponAnimationStyle.Knife, new()},
-                    {WeaponAnimationStyle.Fencing, new()},
-                    {WeaponAnimationStyle.AxeTwoHanded, new()},
-                    {WeaponAnimationStyle.Assault, new()},
-                    {WeaponAnimationStyle.BrutalOneHanded, new()},
-                    {WeaponAnimationStyle.BrutalTwoHanded, new()},
-                    {WeaponAnimationStyle.HeavyOnHip, new()},
-                    {WeaponAnimationStyle.Pistol, new()},
-                    {WeaponAnimationStyle.Rifle, new()},
-                    {WeaponAnimationStyle.Fist, new()},
-                    {WeaponAnimationStyle.Staff, new()},
-                    {WeaponAnimationStyle.EldarRifle, new()},
-                    {WeaponAnimationStyle.EldarAssault, new()},
-                    {WeaponAnimationStyle.EldarHeavyOnHip, new()},
-                    {WeaponAnimationStyle.EldarHeavyOnShoulder, new()},
-                    {WeaponAnimationStyle.OneHandedHammer, new()},
-                    {WeaponAnimationStyle.TwoHandedHammer, new()},}
-                    
-                }
-                
-            };*/
-            //
 
         }
         private static PerSaveSettings cachedPerSave = null;
