@@ -538,7 +538,6 @@ public static class Main
             {
                 Space(10);
                 DisclosureToggle($"Show Weapon Browsers", ref showWeaponBrowsers);
-                Space(10);
             }
 
             if (showWeaponBrowsers)
@@ -870,9 +869,7 @@ public static class Main
                     m_weaponSet = true;
             }
         }
-
-
-        Space(10);
+        Space(5);
     }
 
     public static void BrowserGUI<T>(Browser<string, string> browser, HashSet<string> knownIds,
