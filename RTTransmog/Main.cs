@@ -270,12 +270,13 @@ public static class Main {
             getDictForSlot(slot)[pickedUnit.UniqueId] = (newId, GetKey(newId));
             EntityPartStorage.SavePerSaveSettings();
         }
-        pickedUnit.View.HandsEquipment.ChangeEquipmentWithoutAnimation();
+        pickedUnit.View.HandsEquipment.UpdateAll();
         if (itemSlot == null) return;
         EventBus.RaiseEvent<IUnitEquipmentHandler>(pickedUnit, delegate (IUnitEquipmentHandler h)
         {
             h.HandleEquipmentSlotUpdated(itemSlot, itemSlot.MaybeItem ?? null);
         }, true);
+        pickedUnit.View.HandsEquipment.ChangeEquipmentWithoutAnimation();
     }
     public static IEnumerable<EquipmentEntity> ExtractEEs(BlueprintItemEquipment blueprintItemEquipment, BaseUnitEntity unit = null) {
         unit ??= pickedUnit;
