@@ -57,57 +57,49 @@ namespace RTTransmog {
             public Dictionary<string, ValueTuple<string, string>> Gloves = new();
             public Dictionary<string, ValueTuple<string, string>> Feet = new();
             public Dictionary<string, ValueTuple<string, string>> Armor = new();
-
-            public Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[] Weapons
+            public Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[] m_Weapons; 
+            [JsonIgnore] public Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[] Weapons
             {
                 get
                 {
-                    if (m_Weapons == null)
+                    if (m_Weapons != null) return m_Weapons;
+                    m_Weapons = new Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[2];
+                    var animStyles = new[]
                     {
-                        m_Weapons = new Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[2];
-                        var animStyles = new[]
-                        {
-                            WeaponAnimationStyle.Knife,
-                            WeaponAnimationStyle.Fencing,
-                            WeaponAnimationStyle.AxeTwoHanded,
-                            WeaponAnimationStyle.Assault,
-                            WeaponAnimationStyle.BrutalOneHanded,
-                            WeaponAnimationStyle.BrutalTwoHanded,
-                            WeaponAnimationStyle.HeavyOnHip,
-                            WeaponAnimationStyle.Pistol,
-                            WeaponAnimationStyle.Rifle,
-                            WeaponAnimationStyle.Fist,
-                            WeaponAnimationStyle.Staff,
-                            WeaponAnimationStyle.EldarRifle,
-                            WeaponAnimationStyle.EldarAssault,
-                            WeaponAnimationStyle.EldarHeavyOnHip,
-                            WeaponAnimationStyle.EldarHeavyOnShoulder,
-                            WeaponAnimationStyle.OneHandedHammer,
-                            WeaponAnimationStyle.TwoHandedHammer
-                        };
-                        for (int i = 0; i < 2; i++)
-                        {
-                            m_Weapons[i] = new();
+                        WeaponAnimationStyle.Knife,
+                        WeaponAnimationStyle.Fencing,
+                        WeaponAnimationStyle.AxeTwoHanded,
+                        WeaponAnimationStyle.Assault,
+                        WeaponAnimationStyle.BrutalOneHanded,
+                        WeaponAnimationStyle.BrutalTwoHanded,
+                        WeaponAnimationStyle.HeavyOnHip,
+                        WeaponAnimationStyle.Pistol,
+                        WeaponAnimationStyle.Rifle,
+                        WeaponAnimationStyle.Fist,
+                        WeaponAnimationStyle.Staff,
+                        WeaponAnimationStyle.EldarRifle,
+                        WeaponAnimationStyle.EldarAssault,
+                        WeaponAnimationStyle.EldarHeavyOnHip,
+                        WeaponAnimationStyle.EldarHeavyOnShoulder,
+                        WeaponAnimationStyle.OneHandedHammer,
+                        WeaponAnimationStyle.TwoHandedHammer
+                    };
+                    for (int i = 0; i < 2; i++)
+                    {
+                        m_Weapons[i] = new();
                                 
-                            m_Weapons[i][true] = new();
-                            m_Weapons[i][false] = new();
+                        m_Weapons[i][true] = new();
+                        m_Weapons[i][false] = new();
                             
-                            foreach (var animStyle in animStyles)
-                            {
-                                m_Weapons[i][true][animStyle] = new();
-                                m_Weapons[i][false][animStyle] = new();
-                            }
+                        foreach (var animStyle in animStyles)
+                        {
+                            m_Weapons[i][true][animStyle] = new();
+                            m_Weapons[i][false][animStyle] = new();
                         }
                     }
-
-                    
                     return m_Weapons;
                 }
             }
-
-            private Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[]
-                m_Weapons; 
-
         }
         private static PerSaveSettings cachedPerSave = null;
         public static void ClearCachedPerSave() => cachedPerSave = null;

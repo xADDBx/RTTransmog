@@ -28,11 +28,8 @@ namespace RTTransmog {
             if (slot is ArmorSlot) {
                 slotCategory = Main.Slot.Armor;
             } else if (slot is HandSlot hs) {
-                if (hs.IsPrimaryHand) {
-                    slotCategory = Main.Slot.Mainhand;
-                } else {
-                    slotCategory = Main.Slot.Offhand;
-                } 
+                Override = ("", "");
+                return false;
             } else if (slot is EquipmentSlot<BlueprintItemEquipmentRing> ring) {
                 var body = slot.Owner.GetBodyOptional();
                 if (ring == body.Ring1) {
