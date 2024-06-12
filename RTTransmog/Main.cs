@@ -270,7 +270,7 @@ public static class Main {
             getDictForSlot(slot)[pickedUnit.UniqueId] = (newId, GetKey(newId));
             EntityPartStorage.SavePerSaveSettings();
         }
-        pickedUnit.View.HandsEquipment.UpdateAll();
+        pickedUnit.View.HandsEquipment.HandleEquipmentSetChanged();
         if (itemSlot == null) return;
         EventBus.RaiseEvent<IUnitEquipmentHandler>(pickedUnit, delegate (IUnitEquipmentHandler h)
         {
