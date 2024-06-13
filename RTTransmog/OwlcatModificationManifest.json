@@ -1,9 +1,9 @@
 {
   "UniqueName": "RTTransmog",
-  "Version": "0.5.0",
+  "Version": "0.6.0",
   "DisplayName": "Equipment Transmog for RT",
   "Description": "Equipment Transmog for RT",
-  "Author": "ADDB",
+  "Author": "ADDB, BarleyFlour",
   "ImageName": "Thumbnail.jpg",
   "WorkshopId": "3260719042",
   "Repository": "",

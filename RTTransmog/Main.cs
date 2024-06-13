@@ -206,7 +206,7 @@ public static class Main {
         }
     }
     public static Dictionary<string, (string, string)> getDictForSlot(Slot slot) {
-        if (((int)slot) >= 10) // cant do comparisons in a switch statement, and this saves a few lines.
+        if (((int)slot) >= (int)Slot.Knife) // cant do comparisons in a switch statement, and this saves a few lines.
         {
             return EntityPartStorage.perSave.Weapons[weaponSet][mainHand][getAnimStyleFromSlot(slot)];
         }
