@@ -5,7 +5,7 @@
 		<TargetFramework>net472</TargetFramework>
 		<AssemblyName>RTTransmog</AssemblyName>
 		<Description>Equipment Transmog for RT</Description>
-		<Version>0.5.0</Version>
+		<Version>0.6.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 		<RootNamespace>RTTransmog</RootNamespace>

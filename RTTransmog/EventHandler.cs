@@ -22,7 +22,7 @@ namespace RTTransmog {
             }
         }
         public static HashSet<string> TypeToSet(BlueprintItem item) {
-            if (item is BlueprintItemWeapon) return EntityPartStorage.perSave.KnownWeapons;
+            if (item is BlueprintItemWeapon) return EntityPartStorage.perSave.KnownWeapons[((BlueprintItemWeapon)item).VisualParameters.AnimStyle];
             if (item is BlueprintItemEquipmentShoulders) return EntityPartStorage.perSave.KnownShoulders;
             if (item is BlueprintItemEquipmentRing) return EntityPartStorage.perSave.KnownRing;
             if (item is BlueprintItemEquipmentNeck) return EntityPartStorage.perSave.KnownNeck;

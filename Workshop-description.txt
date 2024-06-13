@@ -1,5 +1,14 @@
 [h1]Equipment Transmog for RT[/h1]
 
-Currently doesn't support weapons.
+Currently only partial support for weapons (change visual to another of the same type; FXs unaffected).
 
-Access by using the CTRL+F10 mod menu.
+[b]Usage[/b]
+To use:
+[list]
+[*]Click the button in RTTransmog mod section of the UnityModManager GUI (opened by pressing CTRL + F10)
+[*]Open the Browser for the respective Slot you want to override (this UI should be familiar to ToyBox users).
+[*]The mod will automatically keep track of every item in your inventory when first opening the mod in a save, and of each item that is added to your inventory after installation. By default, it will only show items you have encountered before. Optionally, you can use the "Show All" disclosure toggle to view every possible item.
+[/list]
+
+
+Since using Mods normally disables Achievements, I suggest also using the [url=https://www.nexusmods.com/warhammer40kroguetrader/mods/4]Allow Modded Achievements[/url] mod or [url=https://www.nexusmods.com/warhammer40kroguetrader/mods/1]Toy Box[/url] to re-enable them.
