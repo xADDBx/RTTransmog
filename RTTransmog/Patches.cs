@@ -48,7 +48,9 @@ namespace RTTransmog {
             } else if (slot is EquipmentSlot<BlueprintItemEquipmentShoulders>) {
                 slotCategory = Main.Slot.Shoulder;
             }
+#if DEBUG
             Main.log.Log($"Checking for slot: {slotCategory}");
+#endif
             if (Main.getDictForSlot(slotCategory).TryGetValue(unit.UniqueId, out var ret)) {
                 Override = ret;
                 return true;
@@ -59,7 +61,9 @@ namespace RTTransmog {
 
         public static bool CheckForOverride(WeaponAnimationStyle animStyle, BaseUnitEntity unit,
             out (string, string) Override, bool mainHand_2, int weaponSet) {
+#if DEBUG
             Main.log.Log($"Checking for anim style: {animStyle}");
+#endif
             if (Main.getDictForSlot(animStyle, mainHand_2, weaponSet).TryGetValue(animStyle, out var styleDictionary) &&
                 styleDictionary.TryGetValue(unit.UniqueId, out var ret)) {
                 Override = ret;
@@ -136,7 +140,9 @@ namespace RTTransmog {
             public static bool ExtractEquipmentEntities(UnitEntityView __instance, ItemSlot slot, ref IEnumerable<EquipmentEntity> __result) {
                 if (CheckForOverride(slot, __instance.EntityData, out var Override)) {
                     __result = Main.ExtractEEs(ResourcesLibrary.BlueprintsCache.Load(Override.Item1) as BlueprintItemEquipment, __instance.EntityData);
+#if DEBUG
                     Main.log.Log($"Found Override with {Override.Item2}, returning array with {__result?.Count() ?? 0} items");
+#endif
                     return false;
                 }
                 return true;
