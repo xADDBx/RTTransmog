@@ -2,7 +2,7 @@
 	<Import Project="$(SolutionDir)GamePath.props" Condition="Exists('$(SolutionDir)GamePath.props')" />
 
 	<PropertyGroup>
-		<TargetFramework>net472</TargetFramework>
+		<TargetFramework>net481</TargetFramework>
 		<AssemblyName>RTTransmog</AssemblyName>
 		<Description>Equipment Transmog for RT</Description>
 		<Version>0.6.0</Version>
