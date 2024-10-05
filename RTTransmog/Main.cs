@@ -648,7 +648,7 @@ public static class Main {
             if (getDictForSlot(currentBrowserSlot).TryGetValue(pickedUnit.UniqueId, out var Override)) {
                 hasOverride = true;
             }
-            if (sprite == null ) {
+            if (sprite == null) {
                 if (GUILayout.Button("No Icon", rarityStyle, GUILayout.Width(w), GUILayout.Height(h))) {
                     UpdateEquippedItems(currentBrowserSlot, hasOverride, Override.Item1, true, id);
                 }
@@ -657,7 +657,9 @@ public static class Main {
                     UpdateEquippedItems(currentBrowserSlot, hasOverride, Override.Item1, true, id);
                 }
             }
-            Label(GetKey(id));
+            var key = GetKey(id);
+            if (!HasEEForUnit[(id, pickedUnit)]) key = "Has no EquipmentEntity for current Unit! ".color(RGBA.red) + key;
+            Label(key);
         }
     }
     private static void WeaponSlotSelector() {
@@ -742,9 +744,10 @@ public static class Main {
             return true;
         return false;
     }
-
+    private static Dictionary<(string, BaseUnitEntity), bool> HasEEForUnit = new(); 
     public static bool HasEEsForCurrentUnit(string id) {
         bool hasEEs = (ExtractEEs(ResourcesLibrary.BlueprintsCache.Load(id) as BlueprintItemEquipment, pickedUnit)?.Count() ?? 0) > 0;
+        HasEEForUnit[(id, pickedUnit)] = hasEEs;
         return hasEEs || settings.shouldShowItemsWithoutEE;
     }
 
