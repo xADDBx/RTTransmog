@@ -658,7 +658,7 @@ public static class Main {
                 }
             }
             var key = GetKey(id);
-            if (!HasEEForUnit.TryGetValue((id, pickedUnit), out _) && currentBrowserSlot != Slot.Mainhand && currentBrowserSlot != Slot.Offhand) key = "Has no EquipmentEntity for current Unit! ".color(RGBA.red) + key;
+            if (HasEE.TryGetValue(id, out var b) && !b) key = "Has no EquipmentEntity for current Unit! ".color(RGBA.red) + key;
             Label(key);
         }
     }
@@ -744,10 +744,10 @@ public static class Main {
             return true;
         return false;
     }
-    private static Dictionary<(string, BaseUnitEntity), bool> HasEEForUnit = new(); 
+    private static Dictionary<string, bool> HasEE = new(); 
     public static bool HasEEsForCurrentUnit(string id) {
         bool hasEEs = (ExtractEEs(ResourcesLibrary.BlueprintsCache.Load(id) as BlueprintItemEquipment, pickedUnit)?.Count() ?? 0) > 0;
-        HasEEForUnit[(id, pickedUnit)] = hasEEs;
+        HasEE[id] = hasEEs;
         return hasEEs || settings.shouldShowItemsWithoutEE;
     }
 
