@@ -658,7 +658,7 @@ public static class Main {
                 }
             }
             var key = GetKey(id);
-            if (!HasEEForUnit[(id, pickedUnit)]) key = "Has no EquipmentEntity for current Unit! ".color(RGBA.red) + key;
+            if (!HasEEForUnit.TryGetValue((id, pickedUnit), out _) && currentBrowserSlot != Slot.Mainhand && currentBrowserSlot != Slot.Offhand) key = "Has no EquipmentEntity for current Unit! ".color(RGBA.red) + key;
             Label(key);
         }
     }
