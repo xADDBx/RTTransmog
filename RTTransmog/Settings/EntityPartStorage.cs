@@ -113,6 +113,7 @@ namespace RTTransmog {
                             }
                         }
                     }
+                    Version = CurrentVersion;
                     return m_Weapons;
                 }
             }
