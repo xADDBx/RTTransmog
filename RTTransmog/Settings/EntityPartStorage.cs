@@ -16,6 +16,8 @@ namespace RTTransmog {
         public class PerSaveSettings : EntityPart {
             public const string ID = "RTTransmog.PerSaveSettings";
             public bool didFirstInit = false;
+            public const int CurrentVersion = 1;
+            public int Version = 0;
             
             // We have got to initialize this too.
             public Dictionary<WeaponAnimationStyle, HashSet<string>> KnownWeapons = new()
@@ -37,6 +39,11 @@ namespace RTTransmog {
                 {WeaponAnimationStyle.EldarHeavyOnShoulder, new()},
                 {WeaponAnimationStyle.OneHandedHammer, new()},
                 {WeaponAnimationStyle.TwoHandedHammer, new()},
+                {WeaponAnimationStyle.Shield, new()},
+                {WeaponAnimationStyle.HeavyOnShoulder, new()},
+                {WeaponAnimationStyle.Thrown, new()},
+                {WeaponAnimationStyle.Mechadendrites, new()},
+                {WeaponAnimationStyle.ShotgunOneHanded, new()}
             };
             //
             public HashSet<string> KnownShoulders = new();
@@ -62,8 +69,8 @@ namespace RTTransmog {
             {
                 get
                 {
-                    if (m_Weapons != null) return m_Weapons;
-                    m_Weapons = new Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[2];
+                    if (m_Weapons != null && Version >= CurrentVersion) return m_Weapons;
+                    m_Weapons ??= new Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[2];
                     var animStyles = new[]
                     {
                         WeaponAnimationStyle.Knife,
@@ -82,19 +89,28 @@ namespace RTTransmog {
                         WeaponAnimationStyle.EldarHeavyOnHip,
                         WeaponAnimationStyle.EldarHeavyOnShoulder,
                         WeaponAnimationStyle.OneHandedHammer,
-                        WeaponAnimationStyle.TwoHandedHammer
+                        WeaponAnimationStyle.TwoHandedHammer,
+                        WeaponAnimationStyle.Shield,
+                        WeaponAnimationStyle.HeavyOnShoulder,
+                        WeaponAnimationStyle.Thrown,
+                        WeaponAnimationStyle.Mechadendrites,
+                        WeaponAnimationStyle.ShotgunOneHanded
                     };
                     for (int i = 0; i < 2; i++)
                     {
-                        m_Weapons[i] = new();
+                        m_Weapons[i] ??= new();
                                 
-                        m_Weapons[i][true] = new();
-                        m_Weapons[i][false] = new();
+                        m_Weapons[i][true] ??= new();
+                        m_Weapons[i][false] ??= new();
                             
                         foreach (var animStyle in animStyles)
                         {
-                            m_Weapons[i][true][animStyle] = new();
-                            m_Weapons[i][false][animStyle] = new();
+                            if (!m_Weapons[i][true].ContainsKey(animStyle)) {
+                                m_Weapons[i][true][animStyle] = new();
+                            }
+                            if (!m_Weapons[i][false].ContainsKey(animStyle)) {
+                                m_Weapons[i][false][animStyle] = new();
+                            }
                         }
                     }
                     return m_Weapons;

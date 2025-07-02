@@ -61,6 +61,11 @@ public static class Main {
         { Slot.EldarHeavyOnShoulder, new(true, true, false, true) },
         { Slot.OneHandedHammer, new(true, true, false, true) },
         { Slot.TwoHandedHammer, new(true, true, false, true) },
+        { Slot.Shield, new(true, true, false, true) },
+        { Slot.HeavyOnShoulder, new(true, true, false, true) },
+        { Slot.Thrown, new(true, true, false, true) },
+        { Slot.Mechadendrites, new(true, true, false, true) },
+        { Slot.ShotgunOneHanded, new(true, true, false, true) },
     };
     //
     private static Dictionary<string, string> KeyCache = new();
@@ -134,6 +139,12 @@ public static class Main {
         EldarHeavyOnShoulder,
         OneHandedHammer,
         TwoHandedHammer,
+        // Added in DLC2
+        Shield,
+        HeavyOnShoulder,
+        Thrown,
+        Mechadendrites,
+        ShotgunOneHanded
     }
     private static Dictionary<Slot, string> SlotName = new Dictionary<Slot, string>() {
         { Slot.Mainhand, "Mainhand" },
@@ -152,7 +163,7 @@ public static class Main {
         { Slot.Assault, "Assault (Rifles/Shotguns)" },
         { Slot.BrutalOneHanded, "Brutal One-handed" },
         { Slot.BrutalTwoHanded, "Brutal Two-handed" },
-        { Slot.HeavyOnHip, "Heavy Weapons" },
+        { Slot.HeavyOnHip, "Heavy Weapons (Hips)" },
         { Slot.Pistol, "Pistols" },
         { Slot.Rifle, "Rifles" },
         { Slot.Fist, "Fist Weapons" },
@@ -163,6 +174,11 @@ public static class Main {
         { Slot.EldarHeavyOnShoulder, "Eldar Heavy Weapons (Shoulder)" },
         { Slot.OneHandedHammer, "One-handed Hammers" },
         { Slot.TwoHandedHammer, "Two-handed Hammers" },
+        { Slot.Shield, "Shields" },
+        { Slot.HeavyOnShoulder, "Heave Weapons (Shoulder)" },
+        { Slot.Thrown, "Throwables" },
+        { Slot.Mechadendrites, "Mechadendrites" },
+        { Slot.ShotgunOneHanded, "One-handed Shotguns" }
     };
     public static WeaponAnimationStyle getAnimStyleFromSlot(Slot slot) // Needed, otherwise the indices are misaligned.
     {
