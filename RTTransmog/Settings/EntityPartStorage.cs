@@ -99,9 +99,12 @@ namespace RTTransmog {
                     for (int i = 0; i < 2; i++)
                     {
                         m_Weapons[i] ??= new();
-                                
-                        m_Weapons[i][true] ??= new();
-                        m_Weapons[i][false] ??= new();
+                        if (!m_Weapons[i].ContainsKey(true)) {
+                            m_Weapons[i][true] = new();
+                        }
+                        if (!m_Weapons[i].ContainsKey(false)) {
+                            m_Weapons[i][false] = new();
+                        }
                             
                         foreach (var animStyle in animStyles)
                         {
