@@ -222,7 +222,10 @@ namespace RTTransmog {
                 }
             }
             if (useCustomNotRowGUI) {
-                customNotRowGUI(definitions, _currentDict);
+                using (HorizontalScope(AutoWidth())) {
+                    Space(indent);
+                    customNotRowGUI(definitions, _currentDict);
+                }
             } else {
                 foreach (var def in definitions) {
                     if (showItemDiv) {

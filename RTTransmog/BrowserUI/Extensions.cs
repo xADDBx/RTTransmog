@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityModManagerNet;
 
 namespace RTTransmog {
     public static class Extensions {
@@ -90,7 +91,7 @@ namespace RTTransmog {
                 return _toggleStyle;
             }
         }
-        public static bool DisclosureToggle(string title, ref bool value, float width = 175, params Action[] actions) {
+        public static bool DisclosureToggle(string title, ref bool value, float width = 200, params Action[] actions) {
             var changed = TogglePrivate(title, ref value, false, true, width);
             If(value, actions);
             return changed;
@@ -117,10 +118,12 @@ namespace RTTransmog {
             };
             var stateSize = sStyle.CalcSize(state);
             lStyle.fixedHeight = stateSize.y - 2;
-            var padding = new RectOffset(0, (int)stateSize.x + 5, 0, 0);
+            // The top padding is totally not a hack that looks good enough on most ui scales.
+            var padding = new RectOffset(0, (int)stateSize.x + 5, stateStyle.padding.top + Mathf.RoundToInt(2 * UnityModManager.UI.Instance.mUIScale), 0);
             lStyle.padding = padding;
+            lStyle.alignment = TextAnchor.MiddleCenter;
             var rect = GUILayoutUtility.GetRect(label, lStyle, options);
-            return Toggle(rect, label, value, isEmpty, on, off, stateStyle, labelStyle);
+            return Toggle(rect, label, value, isEmpty, on, off, stateStyle, lStyle);
         }
         public static bool CheckBox(string label, bool value, bool isEmpty, GUIStyle style, params GUILayoutOption[] options) => Toggle(LabelContent(label), value, CheckOn, CheckOff, GUI.skin.box, style, isEmpty, options);
         public static bool DisclosureToggle(string label, bool value, bool isEmpty = false, params GUILayoutOption[] options) => DisclosureToggle(label, value, GUI.skin.box, GUI.skin.label, isEmpty, options);
