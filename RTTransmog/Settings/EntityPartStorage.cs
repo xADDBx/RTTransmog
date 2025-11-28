@@ -1,5 +1,9 @@
-﻿using Kingmaker.EntitySystem.Persistence;
-using Kingmaker;
+﻿using Kingmaker;
+using Kingmaker.EntitySystem.Entities.Base;
+using Kingmaker.EntitySystem.Persistence;
+using Kingmaker.View.Animation;
+using Kingmaker.View.Equipment;
+using Kingmaker.Visual.CharacterSystem;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,16 +11,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static RTTransmog.Main;
-using Kingmaker.EntitySystem.Entities.Base;
-using Kingmaker.View.Animation;
-using Kingmaker.Visual.CharacterSystem;
 
 namespace RTTransmog {
     public static class EntityPartStorage {
         public class PerSaveSettings : EntityPart {
             public const string ID = "RTTransmog.PerSaveSettings";
             public bool didFirstInit = false;
-            public const int CurrentVersion = 1;
+            public const int CurrentVersion = 2;
             public int Version = 0;
             
             // We have got to initialize this too.
@@ -65,7 +66,8 @@ namespace RTTransmog {
             public Dictionary<string, ValueTuple<string, string>> Feet = new();
             public Dictionary<string, ValueTuple<string, string>> Armor = new();
             public Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[] m_Weapons; 
-            [JsonIgnore] public Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[] Weapons
+            [JsonIgnore] 
+            public Dictionary<bool, Dictionary<WeaponAnimationStyle, Dictionary<string, (string, string)>>>[] Weapons
             {
                 get
                 {
@@ -117,6 +119,7 @@ namespace RTTransmog {
                         }
                     }
                     Version = CurrentVersion;
+                    didFirstInit = false;
                     return m_Weapons;
                 }
             }
@@ -137,6 +140,7 @@ namespace RTTransmog {
                 cachedPerSave = new PerSaveSettings();
                 SavePerSaveSettings();
             }
+            _ = cachedPerSave.Weapons;
             if (!cachedPerSave.didFirstInit) {
                 FirstInit();
                 SavePerSaveSettings();

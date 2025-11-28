@@ -104,6 +104,11 @@ public static class Main {
     private static bool showEldarHeavyOnShoulderBrowser = false;
     private static bool showOneHandedHammerBrowser = false;
     private static bool showTwoHandedHammerBrowser = false;
+    private static bool showShieldBrowser = false;
+    private static bool showHeavyOnShoulderBrowser = false;
+    private static bool showThrownBrowser = false;
+    private static bool showMechadendritesBrowser = false;
+    private static bool showShotgunOneHandedBrowser = false;
     //
 
     private static Slot currentBrowserSlot;
@@ -139,7 +144,7 @@ public static class Main {
         EldarHeavyOnShoulder,
         OneHandedHammer,
         TwoHandedHammer,
-        // Added in DLC2
+        // Added in DLC2 (or empty/unused)
         Shield,
         HeavyOnShoulder,
         Thrown,
@@ -595,6 +600,52 @@ public static class Main {
                             EntityPartStorage.perSave.KnownWeapons[getAnimStyleFromSlot(Slot.TwoHandedHammer)],
                             animStyle: WeaponAnimationStyle.TwoHandedHammer);
                     }
+
+                    currentBrowserSlot = Slot.Shield;
+                    OverrideGUI();
+                    DisclosureToggle($"Show {SlotName[Slot.Shield]} Browser", ref showShieldBrowser);
+                    if (showShieldBrowser) {
+                        BrowserGUI<BlueprintItemEquipmentHand>(WeaponBrowsers[currentBrowserSlot],
+                            EntityPartStorage.perSave.KnownWeapons[getAnimStyleFromSlot(Slot.Shield)],
+                            animStyle: WeaponAnimationStyle.Shield);
+                    }
+                    /*
+                    currentBrowserSlot = Slot.HeavyOnShoulder;
+                    OverrideGUI();
+                    DisclosureToggle($"Show {SlotName[Slot.HeavyOnShoulder]} Browser", ref showHeavyOnShoulderBrowser);
+                    if (showHeavyOnShoulderBrowser) {
+                        BrowserGUI<BlueprintItemEquipmentHand>(WeaponBrowsers[currentBrowserSlot],
+                            EntityPartStorage.perSave.KnownWeapons[getAnimStyleFromSlot(Slot.HeavyOnShoulder)],
+                            animStyle: WeaponAnimationStyle.HeavyOnShoulder);
+                    }
+
+                    currentBrowserSlot = Slot.Thrown;
+                    OverrideGUI();
+                    DisclosureToggle($"Show {SlotName[Slot.Thrown]} Browser", ref showThrownBrowser);
+                    if (showThrownBrowser) {
+                        BrowserGUI<BlueprintItemEquipmentHand>(WeaponBrowsers[currentBrowserSlot],
+                            EntityPartStorage.perSave.KnownWeapons[getAnimStyleFromSlot(Slot.Thrown)],
+                            animStyle: WeaponAnimationStyle.Thrown);
+                    }
+
+                    currentBrowserSlot = Slot.Mechadendrites;
+                    OverrideGUI();
+                    DisclosureToggle($"Show {SlotName[Slot.Mechadendrites]} Browser", ref showMechadendritesBrowser);
+                    if (showMechadendritesBrowser) {
+                        BrowserGUI<BlueprintItemEquipmentHand>(WeaponBrowsers[currentBrowserSlot],
+                            EntityPartStorage.perSave.KnownWeapons[getAnimStyleFromSlot(Slot.Mechadendrites)],
+                            animStyle: WeaponAnimationStyle.Mechadendrites);
+                    }
+
+                    currentBrowserSlot = Slot.ShotgunOneHanded;
+                    OverrideGUI();
+                    DisclosureToggle($"Show {SlotName[Slot.ShotgunOneHanded]} Browser", ref showShotgunOneHandedBrowser);
+                    if (showShotgunOneHandedBrowser) {
+                        BrowserGUI<BlueprintItemEquipmentHand>(WeaponBrowsers[currentBrowserSlot],
+                            EntityPartStorage.perSave.KnownWeapons[getAnimStyleFromSlot(Slot.ShotgunOneHanded)],
+                            animStyle: WeaponAnimationStyle.ShotgunOneHanded);
+                    }
+                    */
                 }
             }
 

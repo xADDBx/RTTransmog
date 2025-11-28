@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Kingmaker.Blueprints.Items.Shields;
 
 namespace RTTransmog {
     public class EventHandler : IItemsCollectionHandler {
@@ -24,6 +25,7 @@ namespace RTTransmog {
         public static HashSet<string> TypeToSet(BlueprintItem item) {
             if (item is BlueprintItemWeapon) return EntityPartStorage.perSave.KnownWeapons[((BlueprintItemWeapon)item).VisualParameters.AnimStyle];
             if (item is BlueprintItemEquipmentShoulders) return EntityPartStorage.perSave.KnownShoulders;
+            if (item is BlueprintItemShield) return EntityPartStorage.perSave.KnownWeapons[((BlueprintItemShield)item).VisualParameters.AnimStyle];
             if (item is BlueprintItemEquipmentRing) return EntityPartStorage.perSave.KnownRing;
             if (item is BlueprintItemEquipmentNeck) return EntityPartStorage.perSave.KnownNeck;
             if (item is BlueprintItemEquipmentHead) return EntityPartStorage.perSave.KnownHead;
