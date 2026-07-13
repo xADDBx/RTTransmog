@@ -5,8 +5,6 @@ using Kingmaker;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Kingmaker.View;
 using Kingmaker.Items.Slots;
 using Kingmaker.Visual.CharacterSystem;
@@ -15,15 +13,19 @@ using Kingmaker.Items;
 using Kingmaker.Blueprints;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.View.Equipment;
-using Kingmaker.Blueprints.Items.Weapons;
-using System.Reflection;
 using Kingmaker.PubSubSystem.Core;
 using Kingmaker.View.Animation;
+using Kingmaker.Blueprints.Items.Augments;
+using Warhammer.SpaceCombat.StarshipLogic;
 
 namespace RTTransmog {
     [HarmonyPatch]
     internal static class Patches {
         public static bool CheckForOverride(ItemSlot slot, BaseUnitEntity unit, out (string, string) Override) {
+            if (unit.IsStarship()) {
+                Override = ("", "");
+                return false;
+            }
             Main.Slot slotCategory = Main.Slot.Armor;
             if (slot is ArmorSlot) {
                 slotCategory = Main.Slot.Armor;
@@ -47,6 +49,9 @@ namespace RTTransmog {
                 slotCategory = Main.Slot.Neck;
             } else if (slot is EquipmentSlot<BlueprintItemEquipmentShoulders>) {
                 slotCategory = Main.Slot.Shoulder;
+            } else if (slot is EquipmentSlot<BlueprintItemAugment>) {
+                Override = ("", "");
+                return false;
             }
 #if DEBUG
             Main.log.Log($"Checking for slot: {slotCategory}");
