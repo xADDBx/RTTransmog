@@ -79,10 +79,6 @@ namespace RTTransmog {
         public static void Label(string title, params GUILayoutOption[] options) => GUILayout.Label(title, options);
         public static string Color(this string str, string rrggbbaa) => $"<color=#{rrggbbaa}>{str}</color>";
         public static string color(this string str, RGBA color) => $"<color=#{color:X}>{str}</color>";
-        public static string Orange(this string s) => s.Color("orange");
-        public static string Cyan(this string s) => s.Color("cyan");
-        public static string Green(this string s) => s.Color("#00ff00ff");
-        public static string Bold(this string str) => $"<b>{str}</b>";
         private static GUIStyle _toggleStyle;
         public static GUIStyle toggleStyle {
             get {

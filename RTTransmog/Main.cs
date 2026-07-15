@@ -1,29 +1,27 @@
 ﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
-using UnityModManagerNet;
-using static UnityModManagerNet.UnityModManager;
-using Kingmaker.Blueprints;
-using static RTTransmog.Extensions;
-using Kingmaker.UI.Models.Tooltip.Base;
-using UnityEngine;
-using Kingmaker.Blueprints.Items.Equipment;
-using Kingmaker.Blueprints.Items.Weapons;
-using Kingmaker.Blueprints.Items.Armors;
-using Kingmaker.EntitySystem.Entities;
 using Kingmaker;
+using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Base;
+using Kingmaker.Blueprints.Items.Armors;
+using Kingmaker.Blueprints.Items.Equipment;
+using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Items;
 using Kingmaker.Items.Slots;
-using Kingmaker.Visual.CharacterSystem;
-using Kingmaker.UnitLogic.Progression.Features;
-using Kingmaker.Blueprints.Base;
-using Kingmaker.PubSubSystem.Core;
 using Kingmaker.PubSubSystem;
+using Kingmaker.PubSubSystem.Core;
+using Kingmaker.UI.Models.Tooltip.Base;
+using Kingmaker.UnitLogic.Progression.Features;
 using Kingmaker.View.Animation;
+using Kingmaker.Visual.CharacterSystem;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using UnityEngine;
+using UnityModManagerNet;
+using static RTTransmog.Extensions;
+using static UnityModManagerNet.UnityModManager;
 
 namespace RTTransmog;
 
@@ -67,6 +65,19 @@ public static class Main {
         { Slot.Mechadendrites, new(true, true, false, true) },
         { Slot.ShotgunOneHanded, new(true, true, false, true) },
     };
+    private static void OnUpdate(UnityModManager.ModEntry modEntry, float z) {
+        try {
+            while (m_MainThreadTaskQueue.TryDequeue(out var task)) {
+                task();
+            }
+        } catch (Exception ex) {
+            Main.log.Log(ex.ToString());
+        }
+    }
+    private static readonly ConcurrentQueue<Action> m_MainThreadTaskQueue = [];
+    public static void ScheduleForMainThread(this Action action) {
+        m_MainThreadTaskQueue.Enqueue(action);
+    }
     //
     private static Dictionary<string, string> KeyCache = new();
 
@@ -210,6 +221,7 @@ public static class Main {
         modEntry.OnGUI = OnGUI;
         settings = Settings.Load<Settings>(modEntry);
         modEntry.OnSaveGUI = OnSaveGUI;
+        modEntry.OnUpdate = OnUpdate;
         HarmonyInstance = new Harmony(modEntry.Info.Id);
         HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
         return true;
@@ -219,12 +231,16 @@ public static class Main {
     }
     public static void FirstInit() {
         EntityPartStorage.perSave.didFirstInit = true;
+        EventHandler.BatchAdd = true;
         foreach (var item in Game.Instance.Player.Inventory) {
             EventHandler.Instance.HandleItemsAdded(Game.Instance.Player.Inventory, item, 1);
         }
         foreach (var item in Game.Instance.Player.PartyAndPets.SelectMany(pap => pap.Inventory.Items)) {
             EventHandler.Instance.HandleItemsAdded(Game.Instance.Player.Inventory, item, 1);
         }
+        EventHandler.BatchAdd = false;
+
+        EntityPartStorage.SavePerSaveSettings();
     }
     public static Dictionary<string, (string, string)> getDictForSlot(Slot slot) {
         if (((int)slot) >= (int)Slot.Knife) // cant do comparisons in a switch statement, and this saves a few lines.
@@ -342,23 +358,21 @@ public static class Main {
             browser.Value.ResetSearch();
     }
     public static void OnGUI(UnityModManager.ModEntry modEntry) {
-        var units = new List<BaseUnitEntity>() { Game.Instance?.Player?.MainCharacterEntity };
-        units.AddRange(Game.Instance.Player.ActiveCompanions ?? new());
-        units = units.Where(u => u != null).ToList();
-        if (units.Count > 0) {
-            GUILayout.Label("Character to change:");
 
-            int selectedIndex = pickedUnit != null ? Array.IndexOf(units.ToArray(), pickedUnit) : 0;
-            if (selectedIndex < 0) {
-                selectedIndex = 0;
-                pickedUnit = null;
-            }
-            int newIndex = GUILayout.SelectionGrid(selectedIndex, units.Select(m => m.CharacterName).ToArray(), 6);
-            if (selectedIndex != newIndex || pickedUnit == null) {
-                pickedUnit = units[newIndex];
-                ResetBrowsers();
-            }
-            Div();
+        Div();
+        CharacterPicker.OnFilterPickerGUI(null, GUILayout.Width(0.98f * UnityModManager.Params.WindowWidth));
+        Div();
+        var changed = CharacterPicker.OnCharacterPickerGUI(null, GUILayout.Width(0.98f * UnityModManager.Params.WindowWidth));
+        Space(5);
+        if (changed) {
+            pickedUnit = CharacterPicker.CurrentUnit;
+            ResetBrowsers();
+        }
+        if (pickedUnit != CharacterPicker.CurrentUnit) {
+            pickedUnit = null;
+        }
+
+        if (pickedUnit != null) {;
             if (TogglePrivate("Show Items without Equipment Entity (those are by default hidden because I assume they don't change visuals). This could be helpful if you don't want equipment in a slot to show because you can just override the slot with an item with no visuals.", ref settings.shouldShowItemsWithoutEE, false, false, 0, AutoWidth())) {
                 ResetBrowsers();
             }

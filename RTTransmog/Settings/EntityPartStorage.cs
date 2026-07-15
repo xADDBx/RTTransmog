@@ -44,7 +44,9 @@ namespace RTTransmog {
                 {WeaponAnimationStyle.HeavyOnShoulder, new()},
                 {WeaponAnimationStyle.Thrown, new()},
                 {WeaponAnimationStyle.Mechadendrites, new()},
-                {WeaponAnimationStyle.ShotgunOneHanded, new()}
+                {WeaponAnimationStyle.ShotgunOneHanded, new()},
+                {WeaponAnimationStyle.BrutalTwoHandedInOneHand, new()},
+                {WeaponAnimationStyle.None, new()}
             };
             //
             public HashSet<string> KnownShoulders = new();
