@@ -17,7 +17,7 @@ namespace RTTransmog {
         public class PerSaveSettings : EntityPart {
             public const string ID = "RTTransmog.PerSaveSettings";
             public bool didFirstInit = false;
-            public const int CurrentVersion = 2;
+            public const int CurrentVersion = 3;
             public int Version = 0;
             
             // We have got to initialize this too.
@@ -98,7 +98,8 @@ namespace RTTransmog {
                         WeaponAnimationStyle.HeavyOnShoulder,
                         WeaponAnimationStyle.Thrown,
                         WeaponAnimationStyle.Mechadendrites,
-                        WeaponAnimationStyle.ShotgunOneHanded
+                        WeaponAnimationStyle.ShotgunOneHanded,
+                        WeaponAnimationStyle.BrutalTwoHandedInOneHand
                     };
                     for (int i = 0; i < 2; i++)
                     {

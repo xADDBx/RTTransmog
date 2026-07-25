@@ -44,15 +44,18 @@ namespace RTTransmog {
         public static void Space(float size) => GUILayout.Space(size);
         public static void Space(int size) => GUILayout.Space(size);
         public static void Div(float indent = 0, float height = 0, float width = 0) => DrawDiv(new(1f, 1f, 1f, 0.65f), indent, height, width);
+        private static readonly Dictionary<Color, Texture2D> _divTextures = new();
         public static void DrawDiv(Color color, float indent = 0, float height = 0, float width = 0) {
-            var fillTexture = new Texture2D(1, 1);
-            //if (divStyle == null) {
+            if (!_divTextures.TryGetValue(color, out var fillTexture) || fillTexture == null) {
+                fillTexture = new Texture2D(1, 1);
+                fillTexture.hideFlags = HideFlags.HideAndDontSave;
+                fillTexture.SetPixel(0, 0, color);
+                fillTexture.Apply();
+                _divTextures[color] = fillTexture;
+            }
             var divStyle = new GUIStyle {
                 fixedHeight = 1,
             };
-            //}
-            fillTexture.SetPixel(0, 0, color);
-            fillTexture.Apply();
             divStyle.normal.background = fillTexture;
             if (divStyle.margin == null) {
                 divStyle.margin = new RectOffset((int)indent, 0, 4, 4);
@@ -278,10 +281,12 @@ namespace RTTransmog {
         private static Texture2D _rarityTexture = null;
         public static Texture2D RarityTexture {
             get {
-                if (_rarityTexture == null)
+                if (_rarityTexture == null) {
                     _rarityTexture = new Texture2D(1, 1);
-                _rarityTexture.SetPixel(0, 0, RGBA.black.Color());
-                _rarityTexture.Apply();
+                    _rarityTexture.hideFlags = HideFlags.HideAndDontSave;
+                    _rarityTexture.SetPixel(0, 0, RGBA.black.Color());
+                    _rarityTexture.Apply();
+                }
                 return _rarityTexture;
             }
         }

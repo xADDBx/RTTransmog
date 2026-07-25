@@ -721,7 +721,7 @@ public static class Main {
         float w, h;
         if (sprite == null) {
             if (targetWidth == 0) {
-                w = sprite.rect.width * scaling;
+                w = 64 * scaling;
                 h = w;
             } else {
                 w = targetWidth;
@@ -839,7 +839,13 @@ public static class Main {
     }
     private static Dictionary<string, bool> HasEE = new(); 
     public static bool HasEEsForCurrentUnit(string id) {
-        bool hasEEs = (ExtractEEs(ResourcesLibrary.BlueprintsCache.Load(id) as BlueprintItemEquipment, pickedUnit)?.Count() ?? 0) > 0;
+        var hasEEs = false;
+        var kee = (ResourcesLibrary.BlueprintsCache.Load(id) as BlueprintItemEquipment)?.EquipmentEntity;
+        if (kee != null) {
+            var race = pickedUnit.Progression.Race;
+            var links = kee.GetLinks(pickedUnit.Gender, race != null ? race.RaceId : Race.Human);
+            hasEEs = links != null && links.Length > 0;
+        }
         HasEE[id] = hasEEs;
         return hasEEs || settings.shouldShowItemsWithoutEE;
     }
