@@ -120,6 +120,7 @@ public static class Main {
     private static bool showThrownBrowser = false;
     private static bool showMechadendritesBrowser = false;
     private static bool showShotgunOneHandedBrowser = false;
+    private static bool showBrutalTwoHandedInOneHand = false;
     //
 
     private static Slot currentBrowserSlot;
@@ -160,7 +161,9 @@ public static class Main {
         HeavyOnShoulder,
         Thrown,
         Mechadendrites,
-        ShotgunOneHanded
+        ShotgunOneHanded,
+        // DLC3?
+        BrutalTwoHandedInOneHand
     }
     private static Dictionary<Slot, string> SlotName = new Dictionary<Slot, string>() {
         { Slot.Mainhand, "Mainhand" },
@@ -194,7 +197,8 @@ public static class Main {
         { Slot.HeavyOnShoulder, "Heave Weapons (Shoulder)" },
         { Slot.Thrown, "Throwables" },
         { Slot.Mechadendrites, "Mechadendrites" },
-        { Slot.ShotgunOneHanded, "One-handed Shotguns" }
+        { Slot.ShotgunOneHanded, "One-handed Shotguns" },
+        { Slot.BrutalTwoHandedInOneHand, "Brutal Two Handed in one Hand" }
     };
     public static WeaponAnimationStyle getAnimStyleFromSlot(Slot slot) // Needed, otherwise the indices are misaligned.
     {
@@ -660,6 +664,14 @@ public static class Main {
                             animStyle: WeaponAnimationStyle.ShotgunOneHanded);
                     }
                     */
+                    currentBrowserSlot = Slot.BrutalTwoHandedInOneHand;
+                    OverrideGUI();
+                    DisclosureToggle($"Show {SlotName[Slot.BrutalTwoHandedInOneHand]} Browser", ref showBrutalTwoHandedInOneHand);
+                    if (showBrutalTwoHandedInOneHand) {
+                        BrowserGUI<BlueprintItemEquipmentHand>(WeaponBrowsers[currentBrowserSlot],
+                            EntityPartStorage.perSave.KnownWeapons[getAnimStyleFromSlot(Slot.BrutalTwoHandedInOneHand)],
+                            animStyle: WeaponAnimationStyle.BrutalTwoHandedInOneHand);
+                    }
                 }
             }
 
